@@ -1,0 +1,9 @@
+<launch>
+	<node pkg="baxter_interface" type="joint_trajectory_action_server.py" name="trajectory_node" output="log" >
+	</node>
+
+	<include file="$(find baxter_moveit_config)/launch/demo_baxter.launch"/>
+
+	<!-- <node pkg="bax_two" type="test_addobj.py" name="addobj" /> -->
+
+</launch>
