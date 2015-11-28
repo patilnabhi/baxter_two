@@ -5,15 +5,15 @@ from moveit_python import *
 
 def test_addobj():
     rospy.init_node("addobj")
-    p = PlanningSceneInterface("/base")
+    p = PlanningSceneInterface("base")
 
     x = 0.5
     y = 0.2
     z = -0.2
 
-    p.addCube("cube_01", 0.1, x, y, z)
-    p.addCube("cube_02", 0.1, x, -y, z)
-    # p.waitForSync()
+    p.addCube("cube_01", 0.05, x, y, z)
+    p.addCube("cube_02", 0.05, x, -y, z)
+    p.waitForSync()
 
     # p.removeCollisionObject("cube_01")
 
