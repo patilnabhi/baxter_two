@@ -66,7 +66,7 @@ def picknplace():
     pickgoal.pose.position.z = zn+0.15
     g.moveToPose(pickgoal, "left_gripper", plan_only=True)
 
-    # Remove object that is picked from planning scene:
+    # Need to add code to remove object that is picked from planning scene:
 
     placegoal = PoseStamped()
 
