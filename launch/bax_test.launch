@@ -1,0 +1,19 @@
+<launch>
+    
+    <arg name="gazebo" default="false" />
+
+    <include file="$(find baxter_gazebo)/launch/baxter_world.launch"/>
+    <!--if="$(arg gazebo)"--> 
+
+    <node name="joint_trajectory_action_server" 
+    pkg="baxter_interface" type="joint_trajectory_action_server.py"  output="log" >
+    </node>
+
+    <include file="$(find baxter_moveit_config)/launch/demo_baxter.launch"/>
+
+    
+    <!-- <node name="bax_test"
+    pkg="bax_two"
+    type="bax_test.py" /> -->
+
+</launch>
