@@ -13,9 +13,9 @@ def picknplace():
 
     # Add table as an attached object to planning scene:
 
-    g = MoveGroupInterface("both_arms", "base")
+    g = MoveGroupInterface("both_arms", "base") # define 'g'
 
-    camview = PoseStamped()
+    camview = PoseStamped() # camview represents position of right arm to get view of objects on table
 
     camview.header.frame_id = "base"
     camview.header.stamp = rospy.Time.now()
@@ -26,7 +26,9 @@ def picknplace():
 
     g.moveToPose(camview, "right_gripper", plan_only=True)
 
-    ### Loop starts here until all objects are cleared:
+    # need to add initial position for left arm:
+
+    ### PicknPlace loop starts here until all objects are cleared:
     ## Get nearest object location from left_gripper
     # 1. Get Location of object(s) w.r.t right_camera (list of poses in x,y,z coord)
     # 2. Get Location of object(s) w.r.t left_gripper
@@ -50,6 +52,8 @@ def picknplace():
     pickgoal.pose.position.y = yn
     pickgoal.pose.position.z = zn+0.15
     pickgoal.pose.orientation.x = 1.0
+
+    # Need to add pose for right arm JUST before left arm comes in to grab objects:
     g.moveToPose(pickgoal, "left_gripper", plan_only=True)
 
     pickgoal.pose.position.z = zn
@@ -68,6 +72,8 @@ def picknplace():
     placegoal.pose.position.z = zg+0.2
     placegoal.pose.orientation.x = 1.0
     g.moveToPose(placegoal, "left_gripper", plan_only=True)
+    
+    # Need to 'call' pose for right arm to capture view again:
 
     placegoal.pose.position.z = zg
     g.moveToPose(placegoal, "left_gripper", plan_only=True)
