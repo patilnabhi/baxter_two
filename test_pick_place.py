@@ -9,9 +9,9 @@ def picknplace():
     rospy.init_node("pnp")
     leftgripper = baxter_interface.Gripper('left')
 
-    # Clear planning scene:
+    # Need to add code to clear planning scene:
 
-    # Add table as an attached object to planning scene:
+    # Need to add table as an 'attached' object to planning scene:
 
     g = MoveGroupInterface("both_arms", "base") # define 'g'
 
@@ -26,17 +26,19 @@ def picknplace():
 
     g.moveToPose(camview, "right_gripper", plan_only=True)
 
-    # need to add initial position for left arm:
+    # Need to add initial position for left arm:
 
     ### PicknPlace loop starts here until all objects are cleared:
-    ## Get nearest object location from left_gripper
-    # 1. Get Location of object(s) w.r.t right_camera (list of poses in x,y,z coord)
+    ## [Need to code this] Get nearest object location from left_gripper: 
+    # 1. [Hanlin's opencv] Get Location of object(s) w.r.t right_camera (list of poses in x,y,z coord)
     # 2. Get Location of object(s) w.r.t left_gripper
-    # 3. add objects to planning scene
+    # 3. Add objects to planning scene
     # 4. Find nearest object to left_gripper (smallest of sqrt(x^2+y^2+z^2)) for all objects
     # ============
     # Return x,y and z for nearest object:
     # ============
+    
+    # Assume x,y,z is found for an object
     xn = 0.4
     yn = 0.2
     zn = 0.0
@@ -44,7 +46,7 @@ def picknplace():
     leftgripper.calibrate()
     leftgripper.open()
 
-    pickgoal = PoseStamped()
+    pickgoal = PoseStamped() # Define position for left_arm to move to 
 
     pickgoal.header.frame_id = "base"
     pickgoal.header.stamp = rospy.Time.now()
@@ -54,6 +56,7 @@ def picknplace():
     pickgoal.pose.orientation.x = 1.0
 
     # Need to add pose for right arm JUST before left arm comes in to grab objects:
+
     g.moveToPose(pickgoal, "left_gripper", plan_only=True)
 
     pickgoal.pose.position.z = zn
