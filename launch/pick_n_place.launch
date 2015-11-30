@@ -4,7 +4,7 @@
   </node>
 
   <include file="$(find baxter_moveit_config)/launch/demo_baxter.launch">
-    <arg name="load_robot_description" value="true"/>
+    <arg name="load_robot_description" value="true">
   </include>
 
   <include file="(find baxter_gazebo)/launch/baxter_world.launch"/>
