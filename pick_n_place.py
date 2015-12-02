@@ -45,10 +45,39 @@ def main():
 
     left_gripper.calibrate()
 
-    #This iterates through an array of PoseStampeds representing each object, 
+    #This next block iterates through an array of PoseStampeds representing each object, 
     #and pick_n_places each
 
     ##WILL ADD ONCE SINGLE OBJECT IS TESTED AND WORKING ON MY SIM
+
+#Pseudocode:
+
+# def distance(x_obj, x_gripper, y_obj, y_gripper):
+#     d = math.sqrt( (x_obj-x_gripper)^2 + (y_obj-y_gripper)^2 )  
+#     return d
+
+# while Array is not empty
+
+    # Array = [obj1, obj2, obj3, obj4, obj5, obj6] of type PoseStamped
+    # min_distance = 9999999 #some kind of large number
+
+    # for i in range 1 to size(Array)
+    #     d = distance(obj1.pose.position.x, goal_pose.pose.position.x, obj1.pose.position.y, goal_pose.pose.position.x)
+    #     if d < min_distance:
+    #         min_distance = d
+    #         closest_obj = Array(i)
+
+    # left_gripper.open()
+    # group.moveToPose(camera_view, "right_gripper", plan_only=False)
+    # group.moveToPose(closest_obj, "left_gripper", max_velocity_scaling_factor = 0.1, plan_only=False)
+    # left_gripper.close()
+    # group.moveToPose(goal_pose, "left_gripper", max_velocity_scaling_factor = 0.1, plan_only=False)
+    # left_gripper.open()
+
+    # scene.removeBox(closest_obj)
+    # pop(Array)
+
+
 
     left_gripper.open()
     group.moveToPose(camera_view, "right_gripper", plan_only=False)
