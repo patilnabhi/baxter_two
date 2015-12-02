@@ -10,7 +10,7 @@ def main():
     rospy.init_node("grab_object")
     
     scene = PlanningSceneInterface("base")
-    group = GroupSceneInterface("both_arms","base")
+    group = MoveGroupInterface("both_arms","base")
     scene.addBox("goal_box",0.3, 0.3, 0.22, 0.7, 0.6, 0.0)
     scene.waitForSync()
 
