@@ -1,12 +1,9 @@
 <launch>
 
-<!--<include file="$(find baxter_gazebo)/launch/baxter_world.launch"/>
-
-    <node name="enable_robot" pkg="baxter_tools" type="enable_robot.py" output="screen"/>
+<!--<include file="$(find baxter_gazebo)/launch/baxter_world.launch"/> -->
 
     <node name="joint_trajectory_action_server" pkg="baxter_interface" type="joint_trajectory_action_server.py" output="screen">
-    </node>
--->    
+    </node>  
 
     <include file="$(find baxter_moveit_config)/launch/demo_baxter.launch"/>
 

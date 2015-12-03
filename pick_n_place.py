@@ -14,36 +14,51 @@ def main():
     scene.addBox("goal_box",0.3, 0.3, 0.22, 0.7, 0.6, 0.0)
     scene.waitForSync()
 
-    left_gripper = baxter_interface.Gripper('left')
+    left = baxter_interface.Gripper('left')
 
+
+    z_drop = 0.07
+    z_rise = 0.2
+    camera_offset_x = -0.3
+    camera_offset_y = -0.3
+    cam_x = 0.6
+    cam_y = -0.2
+    cam_z = 0.6
+    goal_x = 0.7
+    goal_y = 0.6
+    goal_z = 0.23
+    obj_x = 0.654
+    obj_y = 0.119
+    obj_z = 0.01
     #This is the hard coded position of the right gripper camera for optimal view of the table
     camera_view = PoseStamped()
     camera_view.header.frame_id = "base"
     camera_view.header.stamp = rospy.Time.now()
-    camera_view.pose.position.x = 0.3
-    camera_view.pose.position.y = -0.5
-    camera_view.pose.position.z = 0.6
+    camera_view.pose.position.x = cam_x
+    camera_view.pose.position.y = cam_y
+    camera_view.pose.position.z = cam_z
     camera_view.pose.orientation.x = 1.0
 
-    z_drop = 0.07
+
     #does the camera read the z value of the object, or is it known based on the actual table height?
     #do we need to drop and rise z individually, or can we keep z constant?
     goal_pose = PoseStamped()
     goal_pose.header.frame_id = "base"
     goal_pose.header.stamp = rospy.Time.now()
-    goal_pose.pose.position.x = 0.7
-    goal_pose.pose.position.y = 0.6
-    goal_pose.pose.position.z = 0.23
+    goal_pose.pose.position.x = goal_x
+    goal_pose.pose.position.y = goal_y
+    goal_pose.pose.position.z = goal_z
     goal_pose.pose.orientation.x = 1.0
 
     test_object = PoseStamped()
     test_object.header.frame_id = "base"
     test_object.header.stamp = rospy.Time.now()
-    test_object.pose.position.x = 0.654
-    test_object.pose.position.y = 0.119
-    test_object.pose.position.z = 0.01
+    test_object.pose.position.x = obj_x
+    test_object.pose.position.y = obj_y
+    test_object.pose.position.z = obj_z
+    test_object.pose.orientation.x = 1.0
 
-    left_gripper.calibrate()
+    left.calibrate()
 
     #This next block iterates through an array of PoseStampeds representing each object, 
     #and pick_n_places each
@@ -78,13 +93,38 @@ def main():
     # pop(Array)
 
 
-
-    left_gripper.open()
+    left.open()
+    #Move camera to viewing pose
     group.moveToPose(camera_view, "right_gripper", plan_only=False)
-    group.moveToPose(test_object, "left_gripper", max_velocity_scaling_factor = 0.1, plan_only=False)
-    left_gripper.close()
-    group.moveToPose(goal_pose, "left_gripper", max_velocity_scaling_factor = 0.1, plan_only=False)
-    left_gripper.open()
+
+    #Get object info
+    
+    #Offset camera to allow more room for left arm action
+    cam_x = cam_x + camera_offset_x
+    cam_y = cam_y + camera_offset_y
+    camera_view.pose.position.x = cam_x
+    camera_view.pose.position.y = cam_y
+    group.moveToPose(camera_view, "right_gripper", plan_only=False)
+    #Move left arm to object
+    group.moveToPose(test_object, "left_gripper", plan_only=False)
+    obj_z = obj_z - z_drop
+    test_object.pose.position.z = obj_z
+    group.moveToPose(test_object, "left_gripper", plan_only=False)
+    #Close gripper
+    left.close()
+    #Move left arm to goal pose
+    obj_z = obj_z + z_rise
+    test_object.pose.position.z = obj_z
+    group.moveToPose(test_object, "left_gripper", plan_only=False)
+    group.moveToPose(goal_pose, "left_gripper", plan_only=False)
+    #Drop object
+    left.open()
+    #Move camera back to viewing position
+    cam_x = cam_x - camera_offset_x
+    cam_y = cam_y - camera_offset_y
+    camera_view.pose.position.x = cam_x
+    camera_view.pose.position.y = cam_y
+    group.moveToPose(camera_view, "right_gripper", plan_only=False)
     
 
 if __name__=='__main__':
