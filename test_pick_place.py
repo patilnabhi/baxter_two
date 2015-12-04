@@ -28,6 +28,7 @@ def picknplace():
     # Start pick and place    
     D = 100000.
     while not rospy.is_shutdown():
+        p.clear()
         temp = rospy.wait_for_message("Dpos", PoseArray)
         locs = temp.poses        
         if locs:
@@ -51,6 +52,13 @@ def picknplace():
             yn = locs_base[obj_index].position.y
             zn = -0.06
             thn = locs_base[obj_index].position.z
+
+            # Add OTHER objects into planning scene
+            i=0
+            for i in range(len(locs_base)):
+                if i != obj_index:
+                    p.addCube(dir[i], 0.05, locs_base[i].position.x, locs_base[i].position.y, -0.07)
+            p.waitForSync()
 
             leftgripper.calibrate()
             leftgripper.open()
