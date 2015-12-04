@@ -4,6 +4,7 @@
 
     <include file="$(find baxter_moveit_config)/launch/demo_baxter.launch"/>
 
-    <!-- <node pkg="bax_two" type="test_addobj.py" name="addobj" /> -->
+    <!-- <node pkg="bax_two" type="start_robot.py" name="start_robot" /> -->
+    <!-- <node pkg="test" type="test.cpp" name="test" /> -->
 
 </launch>

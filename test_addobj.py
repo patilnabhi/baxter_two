@@ -5,7 +5,7 @@ from moveit_python import *
 
 def test_addobj():
     rospy.init_node("addobj")
-    p = PlanningSceneInterface("base", 0.7, 0.6, 0.0)
+    p = PlanningSceneInterface("base")
 
     x = 0.5
     y = 0.2
