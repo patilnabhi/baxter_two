@@ -55,9 +55,10 @@ def picknplace():
 
             # Add OTHER objects into planning scene
             i=0
+            objlist = [obj01, obj02, obj03, obj04, obj05, obj06, obj07, obj08]
             for i in range(len(locs_base)):
                 if i != obj_index:
-                    p.addCube(dir[i], 0.05, locs_base[i].position.x, locs_base[i].position.y, -0.07)
+                    p.addCube(objlist[i], 0.05, locs_base[i].position.x, locs_base[i].position.y, -0.07)
             p.waitForSync()
 
             leftgripper.calibrate()
