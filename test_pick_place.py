@@ -2,10 +2,10 @@
 
 import rospy
 import roslib; roslib.load_manifest("moveit_python")
-from moveit_python import *
+from moveit_python import PlanningSceneInterface, MoveGroupInterface
 from geometry_msgs.msg import PoseStamped, PoseArray
 import baxter_interface
-from moveit_python.geometry import *
+from moveit_python.geometry import rotate_pose_msg_by_euler_angles
 from math import pi, sqrt
 
 def picknplace():
@@ -27,17 +27,17 @@ def picknplace():
 
     # Start pick and place    
     D = 100000.
-    numobj = 0
     while not rospy.is_shutdown():
         temp = rospy.wait_for_message("Dpos", PoseArray)
         locs = temp.poses        
         if locs:
             temp = PoseArray()
             locs_base = temp.poses
+            # Find nearest object to left arm
             for i in range(len(locs)):
                 locs_base[i].position.x = 0.61 + locs[i].position.x
                 locs_base[i].position.y = -0.2 + locs[i].position.y
-                locs_base[i].position.z = locs[i].position.z
+                locs_base[i].position.z = locs[i].position.z*pi/180
                 dist = sqrt((locs_base[i].position.x)**2 + (locs_base[i].position.y)**2 + (-0.06)**2)
                 if dist < D:
                     D = dist
@@ -47,39 +47,46 @@ def picknplace():
             print locs_base
             print obj_index
 
-            # xn = locs_base[obj_index].position.x
-            # yn = locs_base[obj_index].position.y
-            # zn = -0.06
+            xn = locs_base[obj_index].position.x
+            yn = locs_base[obj_index].position.y
+            zn = -0.06
+            thn = locs_base[obj_index].position.z
 
-            # leftgripper.calibrate()
-            # leftgripper.open()
+            leftgripper.calibrate()
+            leftgripper.open()
 
-            # # Move right arm away            
-            # pos_2 = [1.805870011556845, 0.9850288102385463, -0.5588137158669255, -0.8373051976339934, -0.9004315064597952, 2.0874455972095483, -0.3359333266768987]            
-            # gr.moveToJointPosition(jts_right, pos_2)
+            # Move right arm away            
+            pos_2 = [1.805870011556845, 0.9850288102385463, -0.5588137158669255, -0.8373051976339934, -0.9004315064597952, 2.0874455972095483, -0.3359333266768987]            
+            gr.moveToJointPosition(jts_right, pos_2)
 
-            # # Move left arm to pick object and pick object
-            # pickgoal = PoseStamped() 
-            # pickgoal.header.frame_id = "base"
-            # pickgoal.header.stamp = rospy.Time.now()
-            # pickgoal.pose.position.x = xn
-            # pickgoal.pose.position.y = yn
-            # pickgoal.pose.position.z = zn+0.1
-            # pickgoal.pose.orientation.x = 1.0
-            # g.moveToPose(pickgoal, "left_gripper", plan_only=False)
+            # Move left arm to pick object and pick object
+            pickgoal = PoseStamped() 
+            pickgoal.header.frame_id = "base"
+            pickgoal.header.stamp = rospy.Time.now()
+            pickgoal.pose.position.x = xn
+            pickgoal.pose.position.y = yn
+            pickgoal.pose.position.z = zn+0.1
+            pickgoal.pose.orientation.x = 1.0
+            pickgoal.pose.orientation.y = 0.0
+            pickgoal.pose.orientation.z = 0.0
+            pickgoal.pose.orientation.w = 0.0
+            g.moveToPose(pickgoal, "left_gripper", plan_only=False)
 
-            # pickgoal.pose.position.z = zn
-            # g.moveToPose(pickgoal, "left_gripper", max_velocity_scaling_factor = 0.1, plan_only=False)
-            # leftgripper.close()
+            pickgoal.pose = rotate_pose_msg_by_euler_angles(pickgoal.pose, 0.0, 0.0, thn)
+            g.moveToPose(pickgoal, "left_gripper", plan_only=False)
+            
+            pickgoal.pose.position.z = zn
+            g.moveToPose(pickgoal, "left_gripper", max_velocity_scaling_factor = 0.1, plan_only=False)
+            leftgripper.close()
 
-            # pickgoal.pose.position.z = zn+0.1
-            # g.moveToPose(pickgoal, "left_gripper", max_velocity_scaling_factor = 0.1, plan_only=False)
+            pickgoal.pose.position.z = zn+0.1
+            g.moveToPose(pickgoal, "left_gripper", max_velocity_scaling_factor = 0.1, plan_only=False)
 
-            # # Move left arm to place object and place object            
-            # pos_place = [-1.441426162661994, 0.8389151064712133, 0.14240920034028015, -0.14501001475655606, -1.7630090377446503, -1.5706376573674472, 0.09225918246029519]            
-            # gl.moveToJointPosition(jts_left, pos_place)
+            # Move left arm to place object and place object            
+            pos_place = [-1.441426162661994, 0.8389151064712133, 0.14240920034028015, -0.14501001475655606, -1.7630090377446503, -1.5706376573674472, 0.09225918246029519]            
+            gl.moveToJointPosition(jts_left, pos_place)
 
-            # leftgripper.open()
+            leftgripper.open()
 
             
 
