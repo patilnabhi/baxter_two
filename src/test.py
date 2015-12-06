@@ -1,203 +1,178 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
-from bax_test import RobotState
+# import sys
+# import rospy
+# from moveit_python import *
+# from geometry_msgs.msg import PoseStamped
+# import moveit_msgs.msg
+# from moveit_msgs.srv import GetPositionIK
+# import baxter_interface
+# import moveit_commander
+
 
 import sys
-import copy
+import time
 import rospy
-import moveit_commander
+import baxter_interface
+import tf
+import numpy
+# from baxter_interface import CHECK_VERSION
+from moveit_python import PlanningSceneInterface, MoveGroupInterface
+
+from geometry_msgs.msg import PoseStamped
 import moveit_msgs.msg
-import geometry_msgs.msg
-from std_msgs.msg import String
+from moveit_msgs.srv import GetPositionIK
+from sensor_msgs.msg import Range
 
-def move_group_python_interface_tutorial():
-  ## BEGIN_TUTORIAL
-  ##
-  ## Setup
-  ## ^^^^^
-  ## CALL_SUB_TUTORIAL imports
-  ##
-  ## First initialize moveit_commander and rospy.
-  print "============ Starting tutorial setup"
-  moveit_commander.roscpp_initialize(sys.argv)
-  rospy.init_node('move_group_python_interface_tutorial')
+#given robot arm side "right" or "left", returns IR sensor's range reading (+X direction of robot/"side"_hand_range frame)
+def getIR(side):
+    IR=rospy.wait_for_message("/robot/range/"+side+"_hand_range/state", Range, timeout=None)
+    return IR.range
 
-  ## Instantiate a RobotCommander object.  This object is an interface to
-  ## the robot as a whole.
-  robot = moveit_commander.RobotCommander()
-
-  ## Instantiate a PlanningSceneInterface object.  This object is an interface
-  ## to the world surrounding the robot.
-  scene = moveit_commander.PlanningSceneInterface()
-
-  ## Instantiate a MoveGroupCommander object.  This object is an interface
-  ## to one group of joints.  In this case the group is the joints in the left
-  ## arm.  This interface can be used to plan and execute motions on the left
-  ## arm.
-  group = moveit_commander.MoveGroupCommander("left_arm")
+#given string "right" or "left, x distance , and tf instance, returns corresponding angles and displacement in base frame 
+def transIRtoBase(side,IRrange,tt):
+    t=tt.getLatestCommonTime(side+"_hand_range", "base")
+    (trans,orien) = tt.lookupTransform("base",side+"_hand_range",t)  #orn is presumably quaternion
+    matrix=tf.transformations.compose_matrix(angles=tf.transformations.euler_from_quaternion(orien), translate=trans)
+    pt=tf.transformations.compose_matrix(translate=(IRrange,0,0))
+    # numpy.array(((IRrange),(0),(0),(1)))
+    ptbase=tf.transformations.decompose_matrix(numpy.dot(matrix,pt))
+    euler= ptbase[2]
+    translation = ptbase[3]
+    quaternion=tf.transformations.quaternion_from_euler(euler[0],euler[1],euler[2])
+    return (euler,translation) #orientation in Euler angles; position in x,y,z
 
 
-  ## We create this DisplayTrajectory publisher which is used below to publish
-  ## trajectories for RVIZ to visualize.
-  display_trajectory_publisher = rospy.Publisher('/move_group/display_planned_path',moveit_msgs.msg.DisplayTrajectory)
-
-  ## Wait for RVIZ to initialize. This sleep is ONLY to allow Rviz to come up.
-  print "============ Waiting for RVIZ..."
-  rospy.sleep(10)
-  print "============ Starting tutorial "
-
-  ## Getting Basic Information
-  ## ^^^^^^^^^^^^^^^^^^^^^^^^^
-  ##
-  ## We can get the name of the reference frame for this robot
-  print "============ Reference frame: %s" % group.get_planning_frame()
-
-  ## We can also print the name of the end-effector link for this group
-  print "============ Reference frame: %s" % group.get_end_effector_link()
-
-  ## We can get a list of all the groups in the robot
-  print "============ Robot Groups:"
-  print robot.get_group_names()
-
-  ## Sometimes for debugging it is useful to print the entire state of the
-  ## robot.
-  print "============ Printing robot state"
-  print robot.get_current_state()
-  print "============"
-
-
-  ## Planning to a Pose goal
-  ## ^^^^^^^^^^^^^^^^^^^^^^^
-  ## We can plan a motion for this group to a desired pose for the 
-  ## end-effector
-  print "============ Generating plan 1"
-  pose_target = geometry_msgs.msg.Pose()
-  pose_target.orientation.w = 1.0
-  pose_target.position.x = 0.7
-  pose_target.position.y = -0.05
-  pose_target.position.z = 1.1
-  group.set_pose_target(pose_target)
-
-  ## Now, we call the planner to compute the plan
-  ## and visualize it if successful
-  ## Note that we are just planning, not asking move_group 
-  ## to actually move the robot
-  plan1 = group.plan()
-
-  print "============ Waiting while RVIZ displays plan1..."
-  rospy.sleep(5)
-
- 
-  ## You can ask RVIZ to visualize a plan (aka trajectory) for you.  But the
-  ## group.plan() method does this automatically so this is not that useful
-  ## here (it just displays the same trajectory again).
-  print "============ Visualizing plan1"
-  display_trajectory = moveit_msgs.msg.DisplayTrajectory()
-
-  display_trajectory.trajectory_start = robot.get_current_state()
-  display_trajectory.trajectory.append(plan1)
-  display_trajectory_publisher.publish(display_trajectory);
-
-  print "============ Waiting while plan1 is visualized (again)..."
-  rospy.sleep(5)
-
-
-  ## Moving to a pose goal
-  ## ^^^^^^^^^^^^^^^^^^^^^
-  ##
-  ## Moving to a pose goal is similar to the step above
-  ## except we now use the go() function. Note that
-  ## the pose goal we had set earlier is still active 
-  ## and so the robot will try to move to that goal. We will
-  ## not use that function in this tutorial since it is 
-  ## a blocking function and requires a controller to be active
-  ## and report success on execution of a trajectory.
-
-  # Uncomment below line when working with a real robot
-  # group.go(wait=True)
-
-  ## Planning to a joint-space goal 
-  ## ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  ##
-  ## Let's set a joint space goal and move towards it. 
-  ## First, we will clear the pose target we had just set.
-
-  group.clear_pose_targets()
-
-  ## Then, we will get the current set of joint values for the group
-  group_variable_values = group.get_current_joint_values()
-  print "============ Joint values: ", group_variable_values
-
-  ## Now, let's modify one of the joints, plan to the new joint
-  ## space goal and visualize the plan
-  group_variable_values[0] = 1.0
-  group.set_joint_value_target(group_variable_values)
-
-  plan2 = group.plan()
-
-  print "============ Waiting while RVIZ displays plan2..."
-  rospy.sleep(5)
-
-
-  ## Cartesian Paths
-  ## ^^^^^^^^^^^^^^^
-  ## You can plan a cartesian path directly by specifying a list of waypoints 
-  ## for the end-effector to go through.
-  waypoints = []
-
-  # start with the current pose
-  waypoints.append(group.get_current_pose().pose)
-
-  # first orient gripper and move forward (+x)
-  wpose = geometry_msgs.msg.Pose()
-  wpose.orientation.w = 1.0
-  wpose.position.x = waypoints[0].position.x + 0.1
-  wpose.position.y = waypoints[0].position.y
-  wpose.position.z = waypoints[0].position.z
-  waypoints.append(copy.deepcopy(wpose))
-
-  # second move down
-  wpose.position.z -= 0.10
-  waypoints.append(copy.deepcopy(wpose))
-
-  # third move to the side
-  wpose.position.y += 0.05
-  waypoints.append(copy.deepcopy(wpose))
-
-  ## We want the cartesian path to be interpolated at a resolution of 1 cm
-  ## which is why we will specify 0.01 as the eef_step in cartesian
-  ## translation.  We will specify the jump threshold as 0.0, effectively
-  ## disabling it.
-  (plan3, fraction) = group.compute_cartesian_path(
-                               waypoints,   # waypoints to follow
-                               0.01,        # eef_step
-                               0.0)         # jump_threshold
-                               
-  print "============ Waiting while RVIZ displays plan3..."
-  rospy.sleep(5)
-
- 
-  ## Adding/Removing Objects and Attaching/Detaching Objects
-  ## ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  ## First, we will define the collision object message
-  collision_object = moveit_msgs.msg.CollisionObject()
-
-
-
-  ## When finished shut down moveit_commander.
-  moveit_commander.roscpp_shutdown()
-
-  ## END_TUTORIAL
-
-  print "============ STOPPING"
-
-
-def main():
-    move_group_python_interface_tutorial()
-        
-if __name__ == '__main__':
+#given side "right" or "left" and request, returns list of arm joint angles
+def IK_client(side,request):
+    print "Waiting for GetPositionIK service" 
+    rospy.wait_for_service('GetPositionIK')
     try:
-        main()
-    except rospy.ROSInterruptException:
-        pass
-        
+        getJoints = rospy.ServiceProxy('compute_ik', GetPositionIK)
+        print "Calling IK service"
+        sol = getJoints(request)
+        if side == "left":
+            joints=sol.solution.joint_state.position[1:8]
+        elif side == "right":
+            joints=sol.solution.joint_state.position[8:15]
+        return joints
+    except rospy.ServiceException, e:
+        print "Service call failed: %s"%e
+
+
+#given side "left" or "right", list of current joint angles in desired arm, desired PoseStamped, returns request for MoveIt! IK joint solution
+def initRequest(side,desired_pose,current_joints=[],timeout=2):
+    print "Generating Request"
+    request=moveit_msgs.msg.PositionIKRequest()
+    request.group_name=side+"_arm"
+    if len(current_joints)==7:
+        cjoints = current_joints
+    elif side=="right":
+        print "Using right arm neutral position as reference for IK"
+        cjoints = [1.2, 2.0, 0.1, -1.0, -0.67, 1.0, 0.5]
+    elif side =="left":
+        print "Using left arm neutral position as reference for IK"
+        cjoints =[-1.2, 2.0, -0.1, -1.0, 0.67, 1.0, -0.5]
+    request.robot_state.joint_state.position=cjoints
+    request.robot_state.joint_state.name=[side+'_e0', side+'_e1', side+'_s0', side+'_s1', side+'_w0', side+'_w1', side+'_w2']
+    request.avoid_collisions=True
+    # request.ik_link_names=robot.get_link_names(group = robot.get_group("left_arm"))
+    request.pose_stamped=desired_pose
+    request.timeout=rospy.Duration.from_sec(timeout)
+    request.attempts=100
+    print "Request created"
+    return request
+
+def initPose(px,py,pz,ox=1.0,oy=0.0,oz=0.0,ow=0.0):
+    print "Creating PoseStamped"
+    Pose=PoseStamped()
+    Pose.header.stamp = rospy.Time.now()
+    Pose.pose.position.x = px
+    Pose.pose.position.y = py
+    Pose.pose.position.z = pz
+    Pose.pose.orientation.x = ox
+    Pose.pose.orientation.y = oy
+    Pose.pose.orientation.z = oz
+    Pose.pose.orientation.w = ow
+    print "PoseStamped Created"
+    return Pose
+
+#if any new joint position is farther than 3/2 Pi from original position, return False
+def JointTest(curr_joints,new_joints):
+    print "Testing joint solution"
+    for i in range(len(new_joints)):
+        if (abs(curr_joints[i]-new_joints[i]))>(3.14*1.5):
+            return False
+        else: 
+            return True
+
+
+#given side "right" or "left", list of current joint positions of desired arm, desired pose, returns suitable joint states for desired pose
+#optionally give test=True if want to try filtering crazy joint motions. Untested; may give identical results every time...
+#currently doesn't take into account external collision objects. Come on Mike Ferguson! You can do it!
+def transJoints(side,curr_joints,pose,test=False,iterations=5):
+    print "Calling request function"
+    request = initRequest(side,pose,current_joints=curr_joints,timeout=2)
+    new_joints=IK_client(side,request)
+    if test:
+        satisfaction=JointTest(curr_joints,new_joints)
+        count = 0
+        while (not satisfaction) and (count<iterations):
+            new_joints=IK_client(side,request)
+            satisfaction=JointTest(curr_joints,new_joints)
+            count += 1
+    print "Returning joint solution"
+    return new_joints
+
+
+           
+
+def main_IKsolverDemo():
+    xn = 1.0
+    yn = 1.0
+    zn = 0.0
+
+    pickgoal=initPose(xn,yn,zn,ox=1.0,oy=0.0,oz=0.0,ow=0.0)
+
+    initial_joints=[-1.44, 0.83, 0.14, -0.14, -1.76, -1.57, 0.09]
+    transJoints("left",initial_joints,pickgoal,test=False,iterations=5)
+
+def main_IRrangeDemo(side):
+    tt = tf.TransformListener()
+    rospy.sleep(1)
+    rate = rospy.Rate(2)
+
+    print "Starting IRrange Loop"
+    while not rospy.is_shutdown():
+        try:
+            IRrange=getIR(side)
+            if IRrange>65 or IRrange<0.15:
+                print "IR sensor reading is outside range: %.1f" %(IRrange)
+                rate.sleep()
+                continue
+            (euler,translation)=transIRtoBase(side,IRrange,tt)
+            print "Current reading: %f corresponds to base frame z= %f" %(IRrange,translation[2])
+            rate.sleep()
+
+        except rospy.ROSInterruptException, e:
+            print "ROSInterruptException: %s"%e
+            print "Have a nice day."
+
+
+
+
+
+rospy.init_node('helper_demo')
+rospy.sleep(1)
+print "Initializing Robot"
+# rs = baxter_interface.RobotEnable(CHECK_VERSION)
+# if not rs.state().enabled:
+#     rs.enable()
+# rospy.on_shutdown(clean_shutdown(init_state, rs))
+main_IKsolverDemo
+main_IRrangeDemo("left")
+
+# def clean_shutdown(init_state, rs):
+#     if not init_state:
+#         print("Disabling robot...")
+#         rs.disable()

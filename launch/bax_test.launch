@@ -1,8 +1,8 @@
 <launch>
     
-    <arg name="gazebo" default="false" />
+    <arg name="gazebo" default="true" />
 
-    <include file="$(find baxter_gazebo)/launch/baxter_world.launch"/>
+    <include file="$(find baxter_gazebo)/launch/baxter_world.launch" if="$(arg gazebo)"/>
     <!--if="$(arg gazebo)"--> 
 
     <node name="joint_trajectory_action_server" 

@@ -5,7 +5,7 @@
 import sys
 import copy
 import rospy
-import moveit_commander
+# import moveit_commander
 import moveit_msgs.msg
 import geometry_msgs.msg
 import moveit_python as mip
@@ -32,7 +32,7 @@ class RobotState:
             system('python `rospack find baxter_tools`/scripts/tuck_arms.py -t')
             # system('python ' + _baxter_tools + '/scripts/tuck_arms.py -t')
     def untuck(self):
-            system('python `rospack find baxter_tools`/scripts/tuck_arms.py -t')
+            system('python `rospack find baxter_tools`/scripts/tuck_arms.py -u')
             # system(_baxter_tools + '/scripts/tuck_arms.py -u')
     def camera(self,action,cam):
             #accepts "open" or "close" as action, and "head","left" or "right" as cam
@@ -53,7 +53,7 @@ class RobotState:
 
     def calibrate_gripper(self):
         pass
-        ##fill in here
+        ##USE MoveIt instead
 # #Display to Baxter's face. Publish: /robot/xdisplay 
 # #Cameras: Subscribe: /cameras/head_camera/image
 # import cv2

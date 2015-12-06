@@ -12,7 +12,8 @@ class ImageFeed:
         self.sub = rospy.Subscriber('/cameras/right_hand_camera/image', Image, self.callback)
         self.pub = rospy.Publisher('/robot/xdisplay', Image, queue_size=1) #, latch=True
         
-    def callback(data):
+    def callback(self,data):
+        print ("Publishing feed")
         self.pub.publish(data)
 
 if __name__ == '__main__':
