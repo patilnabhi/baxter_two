@@ -4,6 +4,7 @@ import rospy
 from moveit_python import *
 import baxter_interface
 from geometry_msgs.msg import PoseStamped
+from os import system
 
 def main():
 
@@ -12,6 +13,7 @@ def main():
     scene = PlanningSceneInterface("base")
     group = MoveGroupInterface("both_arms","base")
     scene.addBox("goal_box",0.3, 0.3, 0.22, 0.7, 0.6, 0.0)
+    system('rosrun gazebo_ros spawn_model -file ~/Documents/Github/baxter_ws/src/bax_two/urdf/goal_box.urdf -urdf -model goal_box')
     scene.waitForSync()
 
     left = baxter_interface.Gripper('left')

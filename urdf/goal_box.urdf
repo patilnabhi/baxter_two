@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<robot name="goal_box">
+
+    <link name="goal_box_base">
+        <inertial>
+            <origin rpy="0 0 0" xyz="0.000000 0.000000 0.000000"/>
+            <mass value="0.0001"/>
+            <inertia ixx="1e-08" ixy="0" ixz="0" iyy="1e-08" iyz="0" izz="1e-08"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0"/>
+            <geometry>
+                <box size="0.5 0.5 0.5"/>
+            </geometry>
+            <material name="green">
+                <color rgba="0 1 0 1"/>
+            </material> 
+        </visual>
+    </link>
+
+    <gazebo reference ="goal_box_base">
+        <static>true</static>
+        <turnGravityOff>true</turnGravityOff>
+    </gazebo>
+
+</robot>
