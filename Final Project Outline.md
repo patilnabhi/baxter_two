@@ -27,20 +27,7 @@ cd ~/baxter_ws/
 ```
 
 
-
-*insert more information here*
-
-##MoveIt! Implementation##
-
-*insert more information here*
-
-##OpenCV Implementation##
-
-*insert more information here*
-
-##GUI##
-
-*insert more information here*
+##4. Future Work##
 
 
 

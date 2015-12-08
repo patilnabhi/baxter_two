@@ -17,8 +17,8 @@
 #include <sstream>
 #include <gazebo/msgs/msgs.hh>
 #include "GUIExampleSpawnWidget.hh"
-#include <geometry_msgs/PoseStamped.h>
 #include <gazebo/physics/physics.hh>
+#include <gazebo/gazebo.hh>
 
 using namespace gazebo;
 
@@ -45,7 +45,7 @@ GUIExampleSpawnWidget::GUIExampleSpawnWidget()
   QVBoxLayout *frameLayout = new QVBoxLayout();
 
   // Create a push button, and connect it to the OnButton function
-  QPushButton *button = new QPushButton(tr("Pick and Place Selected Object"));
+  QPushButton *button = new QPushButton(tr("Move Selected Object"));
   connect(button, SIGNAL(clicked()), this, SLOT(OnButton()));
 
   // Add the button to the frame's layout
@@ -65,16 +65,18 @@ GUIExampleSpawnWidget::GUIExampleSpawnWidget()
 
   // Position and resize this widget
   this->move(10, 10);
-  this->resize(120, 30);
+  this->resize(300, 30);
 
   // Create a node for transportation
   // this->node = transport::NodePtr(new transport::Node());
   // this->node->Init();
   // this->factoryPub = this->node->Advertise<msgs::Factory>("~/factory");
 
-  this->node = transport::NodePtr(new transport::Node());
-  this->node->Init();
-  this->objectPub = this->node->Advertise<geometry_msgs::PoseStamped>("~/pick_n_place_topic");
+  //this->node = transport::NodePtr(new transport::Node());
+  //this->node->Init();
+  //this->factoryPub = this->node->Advertise<msgs::PosesStamped>("~/pose/info"); // need to define this topic
+
+
 }
 
 /////////////////////////////////////////////////
@@ -82,48 +84,41 @@ GUIExampleSpawnWidget::~GUIExampleSpawnWidget()
 {
 }
 
+void callback(const std::string& msg)
+{
+  //std::cout << "I'm here" << std::endl;
+  //std::cout << msg << std::endl;
+  //transport::NodePtr selection_publisher = transport::NodePtr(new transport::Node());
+  //selection_publisher->Init();
+  //transport::PublisherPtr pub = selection_publisher->Advertise<msgs::PosesStamped>("~/pose/info");
+  //pub->Publish(msg);
+
+  //need to figure out how to make this publish the correct type
+
+}
+
 /////////////////////////////////////////////////
 void GUIExampleSpawnWidget::OnButton()
 {
+  transport::NodePtr selection_subscriber = transport::NodePtr(new transport::Node());
+  selection_subscriber->Init();
+  gazebo::transport::SubscriberPtr sub = selection_subscriber->Subscribe("~/selection",&callback);
+//callback is not being called, need to figure out why
+     //physics::ModelState object;
+     //object.GetLinkState("")
 
+     //physics::WorldPtr world = physics::World::World("world");
+     //objectPtr = _world.GetSelectedEntity();
 
+     //physics::Link object;
+     //object.GetLinkState(objectPtr _link)
+     //objectPose = object.GetPose();
 
-  // std::ostringstream newModelStr;
-  // newModelStr << "<sdf version ='" << SDF_VERSION << "'>"
-  //   << "<model name='plugin_unit_sphere_" << this->counter++ << "'>"
-  //   << "  <pose>0 0 1.5 0 0 0</pose>"
-  //   << "  <link name='link'>"
-  //   << "    <inertial><mass>1.0</mass></inertial>"
-  //   << "    <collision name='collision'>"
-  //   << "      <geometry>"
-  //   << "        <sphere><radius>0.5</radius></sphere>"
-  //   << "      </geometry>"
-  //   << "    </collision>"
-  //   << "    <visual name ='visual'>"
-  //   << "      <geometry>"
-  //   << "        <sphere><radius>0.5</radius></sphere>"
-  //   << "      </geometry>"
-  //   << "      <material>"
-  //   << "        <script>"
-  //   << "          <uri>file://media/materials/scripts/gazebo.material</uri>"
-  //   << "          <name>Gazebo/Grey</name>"
-  //   << "        </script>"
-  //   << "      </material>"
-  //   << "    </visual>"
-  //   << "  </link>"
-  //   << "  </model>"
-  //   << "</sdf>";
+     //publish the selected object's pose to a topic yet to be defined
 
-
-     objectPtr = physics::World::GetSelectedEntity();
-
-     physics::Link object;
-     object.LinkState(objectPtr _link)
-     objectPose = object.GetPose();
+     //this->factoryPub->Publish(objectPose);
 
   // Send the model to the gazebo server
-
-     this->objectPub->Publish(objectPose);
 
   // msgs::Factory msg;
   // msg.set_sdf(newModelStr.str());
