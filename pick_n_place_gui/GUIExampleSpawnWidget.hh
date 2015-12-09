@@ -23,8 +23,14 @@
 # include <gazebo/transport/transport.hh>
 # include <gazebo/gui/gui.hh>
 #endif
+extern bool object_clicked;
+typedef const boost::shared_ptr<const gazebo::msgs::Selection> Sel;
+
 
 namespace gazebo
+
+
+
 {
     class GAZEBO_VISIBLE GUIExampleSpawnWidget : public GUIPlugin
     {
@@ -36,6 +42,7 @@ namespace gazebo
 
       /// \brief Destructor
       public: virtual ~GUIExampleSpawnWidget();
+
 
       /// \brief Callback trigged when the button is pressed.
       protected slots: void OnButton();

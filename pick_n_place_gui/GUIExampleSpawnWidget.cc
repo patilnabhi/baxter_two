@@ -25,12 +25,32 @@ using namespace gazebo;
 // Register this plugin with the simulator
 GZ_REGISTER_GUI_PLUGIN(GUIExampleSpawnWidget)
 
+bool object_clicked = FALSE;
+
+
+
+void callback(Sel &_msg)
+{
+  
+  object_clicked = TRUE;
+  std::cout << "I'm here4" << std::endl;
+  //std::cout << "I'm here" << std::endl;
+  //std::cout << msg << std::endl;
+  //transport::NodePtr selection_publisher = transport::NodePtr(new transport::Node());
+  //selection_publisher->Init();
+  //transport::PublisherPtr pub = selection_publisher->Advertise<msgs::PosesStamped>("~/pose/info");
+  //pub->Publish(msg);
+
+  //need to figure out how to make this publish the correct type
+
+}
+
 /////////////////////////////////////////////////
 GUIExampleSpawnWidget::GUIExampleSpawnWidget()
   : GUIPlugin()
 {
   this->counter = 0;
-
+std::cout << "I'm here1" << std::endl;
   // Set the frame background and foreground colors
   this->setStyleSheet(
       "QFrame { background-color : rgba(100, 100, 100, 255); color : white; }");
@@ -67,6 +87,8 @@ GUIExampleSpawnWidget::GUIExampleSpawnWidget()
   this->move(10, 10);
   this->resize(300, 30);
 
+
+  
   // Create a node for transportation
   // this->node = transport::NodePtr(new transport::Node());
   // this->node->Init();
@@ -84,25 +106,17 @@ GUIExampleSpawnWidget::~GUIExampleSpawnWidget()
 {
 }
 
-void callback(const std::string& msg)
-{
-  //std::cout << "I'm here" << std::endl;
-  //std::cout << msg << std::endl;
-  //transport::NodePtr selection_publisher = transport::NodePtr(new transport::Node());
-  //selection_publisher->Init();
-  //transport::PublisherPtr pub = selection_publisher->Advertise<msgs::PosesStamped>("~/pose/info");
-  //pub->Publish(msg);
 
-  //need to figure out how to make this publish the correct type
-
-}
 
 /////////////////////////////////////////////////
 void GUIExampleSpawnWidget::OnButton()
 {
+
   transport::NodePtr selection_subscriber = transport::NodePtr(new transport::Node());
   selection_subscriber->Init();
-  gazebo::transport::SubscriberPtr sub = selection_subscriber->Subscribe("~/selection",&callback);
+  gazebo::transport::SubscriberPtr sub = selection_subscriber->Subscribe("~/selection",callback);
+  //gazebo::transport::SubscriberPtr sub = selection_subscriber->Subscribe("~/world_stats",callback);
+
 //callback is not being called, need to figure out why
      //physics::ModelState object;
      //object.GetLinkState("")
