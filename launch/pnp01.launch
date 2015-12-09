@@ -1,9 +1,8 @@
 <launch>
     <node pkg="baxter_interface" type="joint_trajectory_action_server.py" name="trajectory_node" >
     </node>
-
-    <include file="$(find baxter_moveit_config)/launch/demo_baxter.launch"/>
-
-    <!-- <node pkg="test" type="test_" name="img" /> -->
-
+    <include file="$(find baxter_moveit_config)/launch/demo_baxter.launch"/>    
+    <node pkg="baxter_tools" type="camera_control.py" name="open_right_camera" output="screen"  args="-o right_hand_camera -r 1280x800" />
+	<node pkg="test" type="test_" name="img" />
+	<node pkg="bax_two" type="pnp01.py" name="pnp01" />
 </launch>

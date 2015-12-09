@@ -24,8 +24,6 @@ import moveit_msgs.msg
 from moveit_msgs.srv import GetPositionIK
 from sensor_msgs.msg import Range
 
-from baxter_pykdl import *
-
 #given robot arm side "right" or "left", returns IR sensor's range reading (+X direction of robot/"side"_hand_range frame)
 def getIR(side):
     IR=rospy.wait_for_message("/robot/range/"+side+"_hand_range/state", Range, timeout=None)
@@ -46,30 +44,17 @@ def transIRtoBase(side,IRrange,tt):
 
 
 #given side "right" or "left" and request, returns list of arm joint angles
-def IK_client(side,pose_list):
-    # print "Waiting for GetPositionIK service" 
-    # rospy.wait_for_service('GetPositionIK')
+def IK_client(side,request):
+    print "Waiting for GetPositionIK service" 
+    rospy.wait_for_service('GetPositionIK')
     try:
-        joints = None
-        while (joints==None):
-            ik= baxter_kinematics(side)
-            # d_x=desired_pose.pose.position.x
-            # d_y=desired_pose.pose.position.y
-            # d_z=desired_pose.pose.position.z
-            # d_ox=desired_pose.pose.orientation.x
-            # d_oy=desired_pose.pose.orientation.y
-            # d_oz=desired_pose.pose.orientation.z
-            # d_ow=desired_pose.pose.orientation.w
-            print "Calling IK service"
-            joints = ik.inverse_kinematics(pose_list[0:3], pose_list[3:7])
-            # getJoints = rospy.ServiceProxy('compute_ik', GetPositionIK)
-            # # sol = getJoints(request)
-            # if side == "left":
-            #     joints=sol.solution.joint_state.position[1:8]
-            # elif side == "right":
-            #     joints=sol.solution.joint_state.position[8:15]
-            print joints
-
+        getJoints = rospy.ServiceProxy('compute_ik', GetPositionIK)
+        print "Calling IK service"
+        sol = getJoints(request)
+        if side == "left":
+            joints=sol.solution.joint_state.position[1:8]
+        elif side == "right":
+            joints=sol.solution.joint_state.position[8:15]
         return joints
     except rospy.ServiceException, e:
         print "Service call failed: %s"%e
@@ -116,11 +101,10 @@ def initPose(px,py,pz,ox=1.0,oy=0.0,oz=0.0,ow=0.0):
 def JointTest(curr_joints,new_joints):
     print "Testing joint solution"
     for i in range(len(new_joints)):
-        if (abs(numpy.copy(curr_joints[i])-numpy.copy(new_joints[i])))>(3.14*1.5):
-            print curr_joints[i]-new_joints[i]
+        if (abs(curr_joints[i]-new_joints[i]))>(3.14*1.5):
             return False
-    print max(curr_joints-new_joints)
-    return True
+        else: 
+            return True
 
 
 #given side "right" or "left", list of current joint positions of desired arm, desired pose, returns suitable joint states for desired pose
@@ -128,32 +112,30 @@ def JointTest(curr_joints,new_joints):
 #currently doesn't take into account external collision objects. Come on Mike Ferguson! You can do it!
 def transJoints(side,curr_joints,pose,test=False,iterations=5):
     print "Calling request function"
-    # request = initRequest(side,pose,current_joints=curr_joints,timeout=2)
-    new_joints=IK_client(side,pose)
-
+    request = initRequest(side,pose,current_joints=curr_joints,timeout=2)
+    new_joints=IK_client(side,request)
     if test:
         satisfaction=JointTest(curr_joints,new_joints)
         count = 0
         while (not satisfaction) and (count<iterations):
-            new_joints=IK_client(side,pose)
+            new_joints=IK_client(side,request)
             satisfaction=JointTest(curr_joints,new_joints)
             count += 1
     print "Returning joint solution"
-    print "This testing took %i iterations" %(count)
-    return new_joints           
+    return new_joints
+
+
+           
 
 def main_IKsolverDemo():
     xn = 1.0
     yn = 1.0
     zn = 0.0
 
-    # pickgoal=initPose(xn,yn,zn,ox=1.0,oy=0.0,oz=0.0,ow=0.0)
-    pickgoal=[0.75,0.6,0.25,1.0,0.0,0.0,0.0]
-    initial_joints=[-1.2, 2.0, -0.1, -1.0, 0.67, 1.0, -0.5]
-    solution=transJoints("left",initial_joints,pickgoal,test=True,iterations=150)
-    print "Hurray"
-    print solution
+    pickgoal=initPose(xn,yn,zn,ox=1.0,oy=0.0,oz=0.0,ow=0.0)
 
+    initial_joints=[-1.44, 0.83, 0.14, -0.14, -1.76, -1.57, 0.09]
+    transJoints("left",initial_joints,pickgoal,test=False,iterations=5)
 
 def main_IRrangeDemo(side):
     tt = tf.TransformListener()
@@ -187,8 +169,8 @@ print "Initializing Robot"
 # if not rs.state().enabled:
 #     rs.enable()
 # rospy.on_shutdown(clean_shutdown(init_state, rs))
-main_IKsolverDemo()
-# main_IRrangeDemo("left")
+# main_IKsolverDemo
+main_IRrangeDemo("left")
 
 # def clean_shutdown(init_state, rs):
 #     if not init_state:

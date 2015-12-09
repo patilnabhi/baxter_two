@@ -40,7 +40,7 @@ def get_obj_loc():
     
     locs_x = del_meth(locs_x, ind_rmv)
     locs_y = del_meth(locs_y, ind_rmv)
-    orien = del_meth(orien, ind_rmv) 
+    orien = del_meth(orien, ind_rmv)
 
     return (locs_x, locs_y, orien)
 
@@ -99,11 +99,11 @@ def picknplace():
     # locs_x = del_meth(locs_x, ind_rmv)
     # locs_y = del_meth(locs_y, ind_rmv)
     # orien = del_meth(orien, ind_rmv)    
-    j=0
+
     while locs_x:
         xn = locs_x[0]
         yn = locs_y[0]
-        zn = -0.06
+        zn = -0.1
         thn = orien[0]
         if thn > pi/4:
             thn = -1*(thn%(pi/4))
@@ -188,16 +188,15 @@ def picknplace():
         stleft.pose.orientation.z = 0.0
         stleft.pose.orientation.w = 0.0
 
-        stleft.pose.position.z = -0.10+(j*0.05)        
         gl.moveToPose(stleft, "left_gripper", plan_only=False)
         leftgripper.open()
-        j += 1
+
+        gl.moveToJointPosition(jts_left, lpos1, plan_only=False)
 
 if __name__=='__main__':
     try:
-        rospy.init_node('pnp', anonymous=True)
+        rospy.init_node('pnp01', anonymous=True)
         picknplace()
 
     except rospy.ROSInterruptException:
         pass
-
