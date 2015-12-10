@@ -1,13 +1,15 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(bax_two)
+project(baxter_two)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
+include_directories(${OpenCV_INCLUDE_DIRS})
+find_package(OpenCV)
+find_package(catkin REQUIRED
   roscpp
-  rospy
-  std_msgs
+  sensor_msgs
+  visualization_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -67,8 +69,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   std_msgs
+#   std_msgs  # Or other packages containing msgs
 # )
+
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -100,10 +103,10 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES bax_two
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  LIBRARIES baxter_two
+  CATKIN_DEPENDS OpenCv roscpp sensor_msg/Image
+  DEPENDS system_lib
 )
 
 ###########
@@ -113,31 +116,38 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories(
-  ${catkin_INCLUDE_DIRS}
-)
 
 ## Declare a C++ library
-# add_library(bax_two
-#   src/${PROJECT_NAME}/bax_two.cpp
+# add_library(baxter_two
+#   src/${PROJECT_NAME}/baxter_two.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(bax_two ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(baxter_two ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(bax_two_node src/bax_two_node.cpp)
+# add_executable(baxter_two_node src/baxter_two_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(bax_two_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(baxter_two_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(bax_two_node
+# target_link_libraries(baxter_two_node
 #   ${catkin_LIBRARIES}
 # )
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
+)
+add_executable(baxter_img baxter_img.cpp)
+target_link_libraries(baxter_img
+   ${catkin_LIBRARIES}
+   ${OpenCV_LIBS}
+   ${sensor_msgs_LIBS}
+ )
 
 #############
 ## Install ##
@@ -154,8 +164,8 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS bax_two bax_two_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+# install(TARGETS baxter_two baxter_two_node
+#   ARCHIVE DESTINATION ${CATVKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
@@ -179,7 +189,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_bax_two.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_baxter_two.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
