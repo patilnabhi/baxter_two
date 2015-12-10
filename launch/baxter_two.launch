@@ -10,8 +10,8 @@
     <node pkg="baxter_tools" type="camera_control.py" name="open_right_camera" output="screen"  args="-o right_hand_camera -r 1280x800" />
 
     <!-- Run the baxter_img node to get data from baxter's right hand camera -->
-	<node pkg="baxter_two" type="baxter_img" name="img" />
+	<node pkg="baxter_two" type="baxter_img.cpp" name="img" />
 	<!-- Run the baxter_pnp node to initiate pick and place operation of objects -->
-	<node pkg="baxter_two" type="baxter_pnp" name="pnp" />
+	<node pkg="baxter_two" type="baxter_pnp.py" name="pnp" />
 
 </launch>

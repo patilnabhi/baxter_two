@@ -41,7 +41,7 @@ def picknplace():
     # Clear planning scene
     p.clear()
     # Add table as attached object
-    p.attachBox('table', 0.7, 1.27, 0.54, 0.65, -0.2, -0.38, 'base', touch_links=['pedestal'])
+    p.attachBox('table', 0.7, 1.27, 0.54, 0.65, 0.16, -0.38, 'base', touch_links=['pedestal'])
 
     # Move both arms to start state              
     g.moveToJointPosition(jts_both, pos1, plan_only=False)
@@ -132,61 +132,72 @@ def picknplace():
 
         # Get NEXT cube locations, filter incorrectly detected cubes & sort cubes based on size
         temp = rospy.wait_for_message("Dpos", PoseArray) # A PoseArray geometry message from baxter_img node is subscribed here
-	    locs = temp.poses # 4 parameters are obtained: x-y location, orientation and size of cube
-	    locs_x = []
-	    locs_y = []
-	    orien = []
-	    size = []
-	    for i in range(len(locs)): # Convert object (cube's center) location to baxter's base frame
-	        locs_x.append(0.57 + locs[i].position.x)
-	        locs_y.append(-0.011 + locs[i].position.y)
-	        orien.append(locs[i].position.z*pi/180)
-	        size.append(locs[i].orientation.x)
-	    ind_rmv = []
-	    for i in range(0,len(locs)): 
-	        if (locs_y[i] > 0.42): # Remove objects from list that are in 'place/goal' location
-	            ind_rmv.append(i)
-	            continue
-	        for j in range(i,len(locs)): # Filter multiple detected locations of same cube/object
-	            if not (i == j):
-	                if sqrt((locs_x[i] - locs_x[j])**2 + (locs_y[i] - locs_y[j])**2)<0.01:
-	                    ind_rmv.append(i)    
-	    locs_x = del_meth(locs_x, ind_rmv)
-	    locs_y = del_meth(locs_y, ind_rmv)
-	    orien = del_meth(orien, ind_rmv) 
-	    size = del_meth(size, ind_rmv)
-	    if locs_x:  # Sort list based on cube/object size
-	        ig0 = itemgetter(0)
-	        sorted_lists = zip(*sorted(zip(size,locs_x,locs_y,orien), reverse=True, key=ig0))
-	        locs_x = list(sorted_lists[1])
-	        locs_y = list(sorted_lists[2])
-	        orien = list(sorted_lists[3])
-	        size = list(sorted_lists[0])
+        locs = temp.poses # 4 parameters are obtained: x-y location, orientation and size of cube
+        locs_x = []
+        locs_y = []
+        orien = []
+        size = []
+        for i in range(len(locs)): # Convert object (cube's center) location to baxter's base frame
+            locs_x.append(0.57 + locs[i].position.x)
+            locs_y.append(-0.011 + locs[i].position.y)
+            orien.append(locs[i].position.z*pi/180)
+            size.append(locs[i].orientation.x)
+        ind_rmv = []
+        for i in range(0,len(locs)): 
+            if (locs_y[i] > 0.42): # Remove objects from list that are in 'place/goal' location
+                ind_rmv.append(i)
+                continue
+            for j in range(i,len(locs)): # Filter multiple detected locations of same cube/object
+                if not (i == j):
+                    if sqrt((locs_x[i] - locs_x[j])**2 + (locs_y[i] - locs_y[j])**2)<0.01:
+                        ind_rmv.append(i)    
+        locs_x = del_meth(locs_x, ind_rmv)
+        locs_y = del_meth(locs_y, ind_rmv)
+        orien = del_meth(orien, ind_rmv) 
+        size = del_meth(size, ind_rmv)
+        if locs_x:  # Sort list based on cube/object size
+            ig0 = itemgetter(0)
+            sorted_lists = zip(*sorted(zip(size,locs_x,locs_y,orien), reverse=True, key=ig0))
+            locs_x = list(sorted_lists[1])
+            locs_y = list(sorted_lists[2])
+            orien = list(sorted_lists[3])
+            size = list(sorted_lists[0])
 
         # Place object
         stleft = PoseStamped() 
         stleft.header.frame_id = "base"
-        stleft.header.stamp = rospy.Time.now()
-        stleft.pose.position.x = 0.65 # was 0.62
-        stleft.pose.position.y = 0.55
-        stleft.pose.position.z = 0.1
-        stleft.pose.orientation.x = 1.0
-        stleft.pose.orientation.y = 0.0
-        stleft.pose.orientation.z = 0.0
-        stleft.pose.orientation.w = 0.0
-
+        stleft.header.stamp = rospy.Time.now()        
+       
         # If cube is big, move to pose to stack it up
         if sz > 16.:
             stleft.pose.position.x = 0.65 # was 0.6
             stleft.pose.position.y = 0.7
             stleft.pose.position.z = -0.04+(k*0.05)
+            stleft.pose.orientation.x = 1.0
+            stleft.pose.orientation.y = 0.0
+            stleft.pose.orientation.z = 0.0
+            stleft.pose.orientation.w = 0.0
+            gl.moveToPose(stleft, "left_gripper", max_velocity_scaling_factor = 0.14, plan_only=False)
+            leftgripper.open()
+            stleft.pose.position.z = 0.3
+            gl.moveToPose(stleft, "left_gripper", plan_only=False)
+            gl.moveToJointPosition(jts_left, lpos1, plan_only=False)
             k += 1
+        else:
+            stleft.pose.position.x = 0.65 # was 0.62
+            stleft.pose.position.y = 0.55
+            stleft.pose.position.z = 0.2 # was 0.1
+            stleft.pose.orientation.x = 1.0
+            stleft.pose.orientation.y = 0.0
+            stleft.pose.orientation.z = 0.0
+            stleft.pose.orientation.w = 0.0
+            gl.moveToPose(stleft, "left_gripper", plan_only=False)        
+            leftgripper.open()
+            gl.moveToJointPosition(jts_left, lpos1, plan_only=False)
+        
 
-        gl.moveToPose(stleft, "left_gripper", plan_only=False)        
-        leftgripper.open()
-
-        stleft.pose.position.z = 0.3
-        gl.moveToPose(stleft, "left_gripper", plan_only=False)
+        # stleft.pose.position.z = 0.3
+        # gl.moveToPose(stleft, "left_gripper", plan_only=False)
 
 
 if __name__=='__main__':
