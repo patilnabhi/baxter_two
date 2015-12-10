@@ -166,17 +166,21 @@ def picknplace():
         # Place object
         stleft = PoseStamped() 
         stleft.header.frame_id = "base"
-        stleft.header.stamp = rospy.Time.now()        
-       
+        stleft.header.stamp = rospy.Time.now()
+        stleft.pose.position.x = 0.65       
+        stleft.pose.orientation.x = 1.0
+        stleft.pose.orientation.y = 0.0
+        stleft.pose.orientation.z = 0.0
+        stleft.pose.orientation.w = 0.0
         # If cube is big, move to pose to stack it up
         if sz > 16.:
-            stleft.pose.position.x = 0.65 # was 0.6
+            # stleft.pose.position.x = 0.65 # was 0.6
             stleft.pose.position.y = 0.7
             stleft.pose.position.z = -0.04+(k*0.05)
-            stleft.pose.orientation.x = 1.0
-            stleft.pose.orientation.y = 0.0
-            stleft.pose.orientation.z = 0.0
-            stleft.pose.orientation.w = 0.0
+            # stleft.pose.orientation.x = 1.0
+            # stleft.pose.orientation.y = 0.0
+            # stleft.pose.orientation.z = 0.0
+            # stleft.pose.orientation.w = 0.0
             gl.moveToPose(stleft, "left_gripper", max_velocity_scaling_factor = 0.14, plan_only=False)
             leftgripper.open()
             stleft.pose.position.z = 0.3
@@ -184,13 +188,13 @@ def picknplace():
             gl.moveToJointPosition(jts_left, lpos1, plan_only=False)
             k += 1
         else:
-            stleft.pose.position.x = 0.65 # was 0.62
+            # stleft.pose.position.x = 0.65 # was 0.62
             stleft.pose.position.y = 0.55
             stleft.pose.position.z = 0.2 # was 0.1
-            stleft.pose.orientation.x = 1.0
-            stleft.pose.orientation.y = 0.0
-            stleft.pose.orientation.z = 0.0
-            stleft.pose.orientation.w = 0.0
+            # stleft.pose.orientation.x = 1.0
+            # stleft.pose.orientation.y = 0.0
+            # stleft.pose.orientation.z = 0.0
+            # stleft.pose.orientation.w = 0.0
             gl.moveToPose(stleft, "left_gripper", plan_only=False)        
             leftgripper.open()
             gl.moveToJointPosition(jts_left, lpos1, plan_only=False)
