@@ -186,7 +186,7 @@ def picknplace():
         stleft = PoseStamped() 
         stleft.header.frame_id = "base"
         stleft.header.stamp = rospy.Time.now()
-        stleft.pose.position.x = 0.62
+        stleft.pose.position.x = 0.65
         stleft.pose.position.y = 0.55
         stleft.pose.position.z = 0.1
         stleft.pose.orientation.x = 1.0
@@ -200,7 +200,7 @@ def picknplace():
             # # stleft.pose.position.z = -0.055+(j*0.02)
             # j += 1
         # else:
-            stleft.pose.position.x = 0.6
+            stleft.pose.position.x = 0.65
             stleft.pose.position.y = 0.7
             stleft.pose.position.z = -0.04+(k*0.05)
             k += 1
