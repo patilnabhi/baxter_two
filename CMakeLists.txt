@@ -129,6 +129,7 @@ include_directories(
 
 ## Declare a C++ executable
 # add_executable(bax_two_node src/bax_two_node.cpp)
+add_executable(ros_selection_subscriber bax_two/ros_selection_subscriber.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -186,3 +187,5 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+
