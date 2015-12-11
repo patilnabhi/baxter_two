@@ -16,6 +16,8 @@ def main():
     system('rosrun gazebo_ros spawn_model -file ~/Documents/Github/baxter_ws/src/bax_two/urdf/goal_box.urdf -urdf -model goal_box')
     scene.waitForSync()
 
+    
+
     left = baxter_interface.Gripper('left')
 
 
