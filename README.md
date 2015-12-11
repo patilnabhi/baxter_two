@@ -7,6 +7,8 @@ Group 2 - Final Project
 
 A ROS project developed for Northwestern ME495 - Embedded Systems in Robotics. This *baxter_two* package is used to control Baxter, a robot created by [Rethink Robotics], allowing Baxter to recognize several objects placed on a table, pick up the objects, and move them to a specified goal location. 
 
+<iframe width="420" height="315" src="https://www.youtube.com/embed/RkelMrtiU3E" frameborder="0" allowfullscreen></iframe>
+
 To launch (in a ROS workspace):
 
 ```bash
