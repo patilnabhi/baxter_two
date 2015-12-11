@@ -25,7 +25,7 @@
 #endif
 extern bool object_clicked;
 typedef const boost::shared_ptr<const gazebo::msgs::Selection> Sel;
-extern Sel chosen_object
+extern Sel chosen_object;
 
 
 namespace gazebo

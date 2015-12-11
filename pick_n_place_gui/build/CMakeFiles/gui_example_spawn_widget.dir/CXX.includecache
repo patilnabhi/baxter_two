@@ -17,6 +17,8 @@ gazebo/physics/physics.hh
 -
 gazebo/gazebo.hh
 -
+ros/ros.h
+/home/vince/Documents/Github/baxter_ws/src/bax_two/pick_n_place_gui/ros/ros.h
 
 /home/vince/Documents/Github/baxter_ws/src/bax_two/pick_n_place_gui/GUIExampleSpawnWidget.hh
 gazebo/common/Plugin.hh

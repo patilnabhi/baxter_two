@@ -19,6 +19,7 @@
 #include "GUIExampleSpawnWidget.hh"
 #include <gazebo/physics/physics.hh>
 #include <gazebo/gazebo.hh>
+#include "ros/ros.h"
 
 using namespace gazebo;
 
@@ -87,8 +88,11 @@ std::cout << "I'm here1" << std::endl;
   this->move(10, 10);
   this->resize(300, 30);
 
+  transport::NodePtr selection_subscriber = transport::NodePtr(new transport::Node());
+  selection_subscriber->Init();
 
-  
+  gazebo::transport::SubscriberPtr sub = selection_subscriber->Subscribe("~/selection",callback);
+  ros::spin();
   // Create a node for transportation
   // this->node = transport::NodePtr(new transport::Node());
   // this->node->Init();
@@ -112,9 +116,7 @@ GUIExampleSpawnWidget::~GUIExampleSpawnWidget()
 void GUIExampleSpawnWidget::OnButton()
 {
 
-  transport::NodePtr selection_subscriber = transport::NodePtr(new transport::Node());
-  selection_subscriber->Init();
-  gazebo::transport::SubscriberPtr sub = selection_subscriber->Subscribe("~/selection",callback);
+
   //gazebo::transport::SubscriberPtr sub = selection_subscriber->Subscribe("~/world_stats",callback);
 
 //callback is not being called, need to figure out why
