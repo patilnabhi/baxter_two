@@ -52,7 +52,7 @@ This section gives a step-by-step approach to run a successful baxter pick and p
 2. Set up [networking] with baxter
 3. Install the required packages as outlined in **Prerequisites** section
 4. Clone this package to your `baxter_ws/src` directory
-5. [source] baxter.sh file, enable the robot and launch `baxter_two.launch` as follows
+5. [Source] `baxter.sh` file, enable the robot, and launch `baxter_two.launch` as follows
 	
 ```
 cd ~/baxter_ws/
