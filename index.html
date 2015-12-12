@@ -45,12 +45,12 @@ roslaunch baxter_two baxter_two.launch
 <h2>
 <a id="tutorial" class="anchor" href="#tutorial" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tutorial</h2>
 
-<p>The following sections describe in detail the required steps:</p>
+<p>The following sections describe contents of this package:</p>
 
 <h3>
 <a id="1-prerequisites" class="anchor" href="#1-prerequisites" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Prerequisites</h3>
 
-<p>The following packages need to be installed: </p>
+<p>The following packages need to be installed for <code>baxter_two</code> package to work: </p>
 
 <ol>
 <li>[Baxter SDK] - to be installed in baxter_ws/src directory</li>
@@ -76,16 +76,27 @@ roslaunch baxter_two baxter_two.launch
 <li>baxter_pnp.py</li>
 </ul>
 </li>
-<li><p>baxter_img.cpp: subscribes to the <code>/cameras/right_hand_camera/image</code> topic, calculates object locations using OpenCV tools, and publishes this information to <code>baxter_pnp</code> node via a <code>PoseArray()</code> message
--baxter_pnp
--Subscribes to the topic published to by <em>baxter_img</em>, then utilizes <code>PlanningSceneInterface</code> and <code>MoveGroupInterface</code> from <em>moveit_python</em> ** to create Baxter's world including the detected objects and plan/execute paths. 
--Uses <code>baxter_interface</code> for gripper control</p></li>
+<li><p><strong>baxter_img.cpp</strong>: subscribes to the <code>/cameras/right_hand_camera/image</code> topic, calculates object locations using OpenCV tools, and publishes this information to <code>baxter_pnp</code> node via a <code>PoseArray()</code> message</p></li>
+<li>
+<p><strong>baxter_pnp.py</strong>: subscribes to the topic (called <code>Dpos</code>) published by <em>baxter_img</em>, and calls <code>PlanningSceneInterface</code> and <code>MoveGroupInterface</code> classes from <code>moveit_python</code> bindings to add collision objects and move baxter's arms respectively</p>
+
+<ul>
+<li>Allows both arms to be moved at the same time</li>
+<li>Allows velocity scaling using <code>max_velocity_scaling_factor</code>
+</li>
+<li>Uses <code>baxter_interface</code> for gripper control</li>
+</ul>
+</li>
 </ul>
 
-<p>**Using these bindings, other capabilities include:
-        -executing planned paths in both joint space and cartesian space
-        -populating planning environment with collision objects
-        -allows velocity scaling</p>
+<h3>
+<a id="3-step-by-step-guide" class="anchor" href="#3-step-by-step-guide" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Step-by-step guide</h3>
+
+<p>This section gives a step-by-step approach to run a successful baxter pick and place with this package. </p>
+
+<p>a. Items needed - a table of height ~ 0.6 m; square blocks (with green top surface); a baxter robot with electric parallel grippers; an ethernet cable (to connect baxter to computer); 
+b. Set up networking with baxter
+c. </p>
 
 <h2>
 <a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
