@@ -21,11 +21,11 @@ roslaunch baxter_two baxter_two.launch
 
 ## Tutorial ##
 
-The following sections describe in detail the required steps:
+The following sections describe contents of this package:
 
 ### 1. Prerequisites ###
 
-The following packages need to be installed: 
+The following packages need to be installed for `baxter_two` package to work: 
 
 1. [Baxter SDK] - to be installed in baxter_ws/src directory
 2. [MoveIt!]
@@ -35,22 +35,27 @@ The following packages need to be installed:
 ### 2. Package Contents ###
 
 The `baxter_two` package consists of following main files:
+
 * **baxter_two.launch**: A launch file that starts the following nodes:
 	* joint_action_trajectory_server.py (required for MoveIt!)
 	* MoveIt! with rviz
 	* baxter_img.cpp
 	* baxter_pnp.py
 
-* baxter_img.cpp: subscribes to the `/cameras/right_hand_camera/image` topic, calculates object locations using OpenCV tools, and publishes this information to `baxter_pnp` node via a `PoseArray()` message
--baxter_pnp
-	-Subscribes to the topic published to by *baxter_img*, then utilizes `PlanningSceneInterface` and `MoveGroupInterface` from *moveit_python* ** to create Baxter's world including the detected objects and plan/execute paths. 
-	-Uses `baxter_interface` for gripper control
+* **baxter_img.cpp**: subscribes to the `/cameras/right_hand_camera/image` topic, calculates object locations using OpenCV tools, and publishes this information to `baxter_pnp` node via a `PoseArray()` message
 
+* **baxter_pnp.py**: subscribes to the topic (called `Dpos`) published by *baxter_img*, and calls `PlanningSceneInterface` and `MoveGroupInterface` classes from `moveit_python` bindings to add collision objects and move baxter's arms respectively
+	* Allows both arms to be moved at the same time
+	* Allows velocity scaling using `max_velocity_scaling_factor`
+	* Uses `baxter_interface` for gripper control
 
-**Using these bindings, other capabilities include:
-		-executing planned paths in both joint space and cartesian space
-		-populating planning environment with collision objects
-		-allows velocity scaling
+### 3. Step-by-step guide ###
+
+This section gives a step-by-step approach to run a successful baxter pick and place with this package. 
+
+a. Items needed - a table of height ~ 0.6 m; square blocks (with green top surface); a baxter robot with electric parallel grippers; an ethernet cable (to connect baxter to computer); 
+b. Set up networking with baxter
+c. 
 
 
 
