@@ -20,25 +20,30 @@
 
     <section class="main-content">
       <h1>
-<a id="group-2---final-project" class="anchor" href="#group-2---final-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>Group 2 - Final Project</h1>
+<a id="baxter-pick-n-place-project" class="anchor" href="#baxter-pick-n-place-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>Baxter Pick 'n' Place Project</h1>
 
 <h2>
 <a id="about" class="anchor" href="#about" aria-hidden="true"><span class="octicon octicon-link"></span></a>About</h2>
 
-<p>A ROS project developed for Northwestern ME495 - Embedded Systems in Robotics. This <em>baxter_two</em> package is used to control Baxter, a robot created by <a href="http://www.rethinkrobotics.com/baxter/">Rethink Robotics</a>, allowing Baxter to recognize several objects placed on a table, pick up the objects, and move them to a specified goal location. </p>
+<p>A ROS project as part of ME495 - Embedded Systems in Robotics course at Northwestern University (NU). </p>
 
-<p><a href="https://www.youtube.com/embed/RkelMrtiU3E" title="Everything Is AWESOME"><img src="https://www.youtube.com/embed/RkelMrtiU3E/0.jpg" alt="Everything Is AWESOME"></a></p>
 
-<p>To launch (in a ROS workspace):</p>
 
-<div class="highlight highlight-source-shell"><pre><span class="pl-c1">cd</span> <span class="pl-k">~</span>/baxter_ws/
-<span class="pl-c1">.</span> baxter.sh
+<p>To launch (in a ROS workspace):
+Type in terminal:</p>
+
+<pre><code>cd ~/baxter_ws/
+. baxter.sh
 rosrun baxter_tools enable_robot.py -e
-roslaunch baxter_two baxter_two.launch</pre></div>
+roslaunch baxter_two baxter_two.launch
+</code></pre>
+
+<h2>
+<a id="goal" class="anchor" href="#goal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goal</h2>
 
 <p>To run this demo on the Baxter simulation, use <code>roslaunch baxter_gazebo baxter_world.launch</code> to start up the simulator, and replace <code>. baxter.sh</code> with <code>. baxter.sh sim</code>.</p>
 
-<p><strong>NOTE:</strong> Prerequisites to set up workspace are listed as follows:</p>
+<p>Prerequisites to set up workspace are listed as follows:</p>
 
 <ol>
 <li> Install the [Baxter SDK]</li>
