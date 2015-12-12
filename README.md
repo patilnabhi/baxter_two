@@ -32,15 +32,16 @@ The following packages need to be installed:
 3. [moveit_python] by Michael Ferguson - to be installed in baxter_ws/src directory
 4. Baxter Simulator - v1.1 (ONLY needed if NOT working with actual baxter robot)
 
-### 2. baxter_two Package Contents ###
+### 2. Package Contents ###
 
-Launch file:
--`baxter_two.launch`
-	-Launches joint trajectory server, MoveIt! with rviz, baxter_img, and baxter_pnp.
+The `baxter_two` package consists of following main files:
+* **baxter_two.launch**: A launch file that starts the following nodes:
+	* joint_action_trajectory_server.py (required for MoveIt!)
+	* MoveIt! with rviz
+	* baxter_img.cpp
+	* baxter_pnp.py
 
-nodes:
--baxter_img
-	-Subscribes to the `/cameras/right_hand_camera/image` topic, calculates cube locations using OpenCV tools, and publishes this information
+* baxter_img.cpp: subscribes to the `/cameras/right_hand_camera/image` topic, calculates object locations using OpenCV tools, and publishes this information to `baxter_pnp` node via a `PoseArray()` message
 -baxter_pnp
 	-Subscribes to the topic published to by *baxter_img*, then utilizes `PlanningSceneInterface` and `MoveGroupInterface` from *moveit_python* ** to create Baxter's world including the detected objects and plan/execute paths. 
 	-Uses `baxter_interface` for gripper control
