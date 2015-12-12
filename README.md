@@ -1,6 +1,6 @@
 ## About ##
 
-A ROS project as part of ME495 - Embedded Systems in Robotics course at Northwestern University (NU). 
+A ROS project developed as part of ME495 - Embedded Systems in Robotics course at Northwestern University (NU). 
 
 To launch (in a ROS workspace), type in terminal:
 ```
@@ -72,6 +72,13 @@ The following rqt_graph shows a ROS computation graph for baxter pick and place 
 * **Camera Calibration**: We are looking into improving the camera calibration. Currently, variations in surrounding lighting affect the object detection. Using more finely-tuned methods of calibrating the camera will minimize the lighting issue. 
 
 * **GUI Development**: We are also looking to create a Graphical User Interface (GUI) that allows the user to click an object in the virtual world (e.g in [Gazebo]), and pick and place that particular object. This GUI is currently under development.
+
+## Team ##
+
+* **Abhishek Patil**
+* **Alan Hong**
+* **Hanlin Wang**
+* **Vince Martinez**
 
 [Baxter SDK]: http://sdk.rethinkrobotics.com/wiki/Workstation_Setup
 [MoveIt!]: http://moveit.ros.org/install/
