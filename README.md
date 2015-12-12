@@ -65,7 +65,7 @@ roslaunch baxter_two baxter_two.launch
 
 The following rqt_graph shows a ROS computation graph for baxter pick and place highlighting all important nodes and topics during operation:
 
-<img src="/bin/rqtgraph.png" align="middle" width="300">
+<img src="/bin/rosgraph.png" align="middle" width="300">
 
 ## Future Work ##
 
