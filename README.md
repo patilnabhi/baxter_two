@@ -53,12 +53,14 @@ This section gives a step-by-step approach to run a successful baxter pick and p
 	3. Install the required packages as outlined in **Prerequisites** section
 	4. Clone this package to your `baxter_ws/src` directory
 	5. [source] baxter.sh file, enable the robot and launch `baxter_two.launch` as follows:
-	```
-	cd ~/baxter_ws/
-	. baxter.sh
-	rosrun baxter_tools enable_robot.py -e
-	roslaunch baxter_two baxter_two.launch
-	```
+	
+```
+cd ~/baxter_ws/
+. baxter.sh
+rosrun baxter_tools enable_robot.py -e
+roslaunch baxter_two baxter_two.launch
+```
+
 ### 4. rqt_graph ###
 
 The following rqt_graph shows a ROS computation graph for baxter pick and place highlighting all important nodes and topics during operation:
