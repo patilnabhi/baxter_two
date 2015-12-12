@@ -24,7 +24,7 @@ The following packages need to be installed for `baxter_two` package to work:
 
 1. [Baxter SDK] - to be installed in baxter_ws/src directory
 2. [MoveIt!]
-3. [moveit_python] by Michael Ferguson - to be installed in baxter_ws/src directory
+3. [moveit_python] by Michael Ferguson - to be installed in `baxter_ws/src` directory
 4. [Baxter Simulator] - v1.1 (ONLY needed if NOT working with actual baxter robot)
 
 ### 2. Package Contents ###
