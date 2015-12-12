@@ -29,8 +29,7 @@
 
 
 
-<p>To launch (in a ROS workspace):
-Type in terminal:</p>
+<p>To launch (in a ROS workspace), type in terminal:</p>
 
 <pre><code>cd ~/baxter_ws/
 . baxter.sh
@@ -39,24 +38,30 @@ roslaunch baxter_two baxter_two.launch
 </code></pre>
 
 <h2>
-<a id="goal" class="anchor" href="#goal" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goal</h2>
+<a id="goal-of-project" class="anchor" href="#goal-of-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goal of Project</h2>
 
-<p>To run this demo on the Baxter simulation, use <code>roslaunch baxter_gazebo baxter_world.launch</code> to start up the simulator, and replace <code>. baxter.sh</code> with <code>. baxter.sh sim</code>.</p>
-
-<p>Prerequisites to set up workspace are listed as follows:</p>
-
-<ol>
-<li> Install the [Baxter SDK]</li>
-<li> Install <a href="https://github.com/RethinkRobotics/sdk-docs/wiki/MoveIt-Tutorial#tutorial">MoveIt!</a>
-</li>
-<li> Download <a href="https://github.com/mikeferguson/moveit_python">moveit_python</a> by Michael Ferguson</li>
-<li> Install Baxter Simulator (if running the simulation) **</li>
-</ol>
-
-<p>**This must use version 1.1 of the simulator</p>
+<p><strong>Use baxter to pick and place objects from one location to another</strong></p>
 
 <h2>
-<a id="package-contents" class="anchor" href="#package-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Package Contents</h2>
+<a id="tutorial" class="anchor" href="#tutorial" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tutorial</h2>
+
+<p>The following sections describe in detail the required steps:</p>
+
+<h3>
+<a id="1-prerequisites" class="anchor" href="#1-prerequisites" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Prerequisites</h3>
+
+<p>The following packages need to be installed: </p>
+
+<ol>
+<li>[Baxter SDK] - to be installed in baxter_ws/src directory</li>
+<li><a href="https://github.com/RethinkRobotics/sdk-docs/wiki/MoveIt-Tutorial#tutorial">MoveIt!</a></li>
+<li>
+<a href="https://github.com/mikeferguson/moveit_python">moveit_python</a> by Michael Ferguson - to be installed in baxter_ws/src directory</li>
+<li>Baxter Simulator - v1.1 (ONLY needed if NOT working with actual baxter robot)</li>
+</ol>
+
+<h3>
+<a id="2-baxter_two-package-contents" class="anchor" href="#2-baxter_two-package-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. <code>baxter_two</code> Package Contents</h3>
 
 <p>Launch file:
 -<code>baxter_two.launch</code>
