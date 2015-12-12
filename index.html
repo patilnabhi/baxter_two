@@ -45,7 +45,7 @@ roslaunch baxter_two baxter_two.launch
 <h2>
 <a id="tutorial" class="anchor" href="#tutorial" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tutorial</h2>
 
-<p>The following sections describe contents of this package:</p>
+<p>The following sections describe contents of this package and how to use them:</p>
 
 <h3>
 <a id="1-prerequisites" class="anchor" href="#1-prerequisites" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Prerequisites</h3>
@@ -94,27 +94,32 @@ roslaunch baxter_two baxter_two.launch
 
 <p>This section gives a step-by-step approach to run a successful baxter pick and place with this package. </p>
 
-<pre><code>a. Items needed - a table of height ~ 0.6 m; square blocks (with green top surface); a baxter robot with electric parallel grippers; an ethernet cable (to connect baxter to computer); 
-b. Set up networking with baxter
-c. 
+<pre><code>1. Items needed - a table of height ~ 0.6 m; square blocks (with green top surface); a baxter robot with electric parallel grippers; an ethernet cable (to connect baxter to computer);
+2. Set up [networking] with baxter
+3. Install the required packages as outlined in **Prerequisites** section
+4. Clone this package to your `baxter_ws/src` directory
+5. source baxter.sh file, enable the robot and launch `baxter_two.launch` as follows:
+```
+cd ~/baxter_ws/
+. baxter.sh
+rosrun baxter_tools enable_robot.py -e
+roslaunch baxter_two baxter_two.launch
+```
 </code></pre>
 
-<h2>
-<a id="overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
+<h3>
+<a id="4-rqt_graph" class="anchor" href="#4-rqt_graph" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. rqt_graph</h3>
 
-<p>This package utilizes tools offered in several different existing packages. The primary package used in Baxter's pick and place movements is the <a href="https://github.com/RethinkRobotics/sdk-docs/wiki/MoveIt-Tutorial#tutorial">MoveIt!</a> motion planning framework, paired with the <a href="https://github.com/mikeferguson/moveit_python">moveit_python</a> Python bindings created by Michael Ferguson. Additionally, <a href="http://opencv.org/">OpenCV</a> was used to locate the objects using one of Baxter's built-in cameras. This pick-and-place technique utilizes the built-in camera on Baxter's right arm to search for green cubes in the task space. Large green cubes are stacked on top of one another in the goal space, while small green cubes are simply placed in the goal space. Positions of objects can be dynamically repositioned and reoriented, and Baxter will continue to pick and place these object until there are no more object in the task space. </p>
+<p>The following rqt_graph shows a ROS computation graph for baxter pick and place highlighting all important nodes and topics during operation:</p>
 
-<h2>
-<a id="important-nodes-and-topics" class="anchor" href="#important-nodes-and-topics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Important Nodes and Topics</h2>
-
-<p>There are two nodes that are run in this package. The first node, <code>baxter_img</code>, subscribes to the <code>/cameras/right_hand_camera/image</code> topic, calculates cube locations using OpenCV tools, and publishes a <code>PoseArray()</code> message via the <code>DPos</code> topic to the second node, <code>baxter_pnp</code>. <code>baxter_pnp</code> then subscribes to the <code>DPos</code> published to by <code>baxter_img</code>. Then, it utilizes <code>PlanningSceneInterface</code> and <code>MoveGroupInterface</code> from <em>moveit_python</em> to create Baxter's world including the detected objects and plan/execute paths. </p>
+<p><img src="" align="middle" width="300"></p>
 
 <h2>
 <a id="future-work" class="anchor" href="#future-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Future Work</h2>
 
 <ul>
-<li><p>One potential area of improvement for this package is in the camera calibration. currently, variations in surrounding lighting affect the object detection success. Using more finely-tuned methods of calibrating the camera will minimize the lighting issue. </p></li>
-<li><p>Another area is in creating a Graphical User Interface that allows the user to click an object in the virtual world created by Baxter, and pick and place that particular item. In the current state, Baxter will pick up the object that it detects to be closest to itself. Currently, a GUI is under development that utilizes Gazebo pugin functionality. This GUI, when complete, would allow the user to choose an object presented in the Gazebo world, and click a button to execute the pick-and-place action.</p></li>
+<li><p><strong>Camera Calibration</strong>: We are looking into improving the camera calibration. Currently, variations in surrounding lighting affect the object detection. Using more finely-tuned methods of calibrating the camera will minimize the lighting issue. </p></li>
+<li><p><strong>GUI Development</strong>: We are also looking to create a Graphical User Interface (GUI) that allows the user to click an object in the virtual world (e.g in [Gazebo]), and pick and place that particular object. This GUI is currently under development.</p></li>
 </ul>
 
       <footer class="site-footer">
