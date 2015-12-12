@@ -46,7 +46,8 @@ The `baxter_two` package consists of following main files:
 
 ### 3. Step-by-step guide ###
 
-This section gives a step-by-step approach to run a successful baxter pick and place with this package. 
+This section gives a step-by-step approach to run a successful baxter pick and place with this package.
+
 1. Items needed - a table of height ~ 0.6 m; square blocks (with green top surface); a baxter robot with electric parallel grippers; an ethernet cable (to connect baxter to computer)
 2. Set up [networking] with baxter
 3. Install the required packages as outlined in **Prerequisites** section
