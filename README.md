@@ -21,7 +21,7 @@ roslaunch baxter_two baxter_two.launch
 
 ## Tutorial ##
 
-The following sections describe contents of this package:
+The following sections describe contents of this package and how to use them:
 
 ### 1. Prerequisites ###
 
@@ -57,27 +57,24 @@ This section gives a step-by-step approach to run a successful baxter pick and p
 	2. Set up [networking] with baxter
 	3. Install the required packages as outlined in **Prerequisites** section
 	4. Clone this package to your `baxter_ws/src` directory
-	5. 
+	5. source baxter.sh file, enable the robot and launch `baxter_two.launch` as follows:
+	```
+	cd ~/baxter_ws/
+	. baxter.sh
+	rosrun baxter_tools enable_robot.py -e
+	roslaunch baxter_two baxter_two.launch
+	```
+### 4. rqt_graph ###
 
+The following rqt_graph shows a ROS computation graph for baxter pick and place highlighting all important nodes and topics during operation:
 
-
-##Overview##
-
-This package utilizes tools offered in several different existing packages. The primary package used in Baxter's pick and place movements is the [MoveIt!] motion planning framework, paired with the [moveit_python] Python bindings created by Michael Ferguson. Additionally, [OpenCV] was used to locate the objects using one of Baxter's built-in cameras. This pick-and-place technique utilizes the built-in camera on Baxter's right arm to search for green cubes in the task space. Large green cubes are stacked on top of one another in the goal space, while small green cubes are simply placed in the goal space. Positions of objects can be dynamically repositioned and reoriented, and Baxter will continue to pick and place these object until there are no more object in the task space. 
-
-##Important Nodes and Topics##
-
-There are two nodes that are run in this package. The first node, `baxter_img`, subscribes to the `/cameras/right_hand_camera/image` topic, calculates cube locations using OpenCV tools, and publishes a `PoseArray()` message via the `DPos` topic to the second node, `baxter_pnp`. `baxter_pnp` then subscribes to the `DPos` published to by `baxter_img`. Then, it utilizes `PlanningSceneInterface` and `MoveGroupInterface` from *moveit_python* to create Baxter's world including the detected objects and plan/execute paths. 
-
+<img src="" align="middle" width="300">
 
 ##Future Work##
 
-* One potential area of improvement for this package is in the camera calibration. currently, variations in surrounding lighting affect the object detection success. Using more finely-tuned methods of calibrating the camera will minimize the lighting issue. 
+* **Camera Calibration**: We are looking into improving the camera calibration. Currently, variations in surrounding lighting affect the object detection. Using more finely-tuned methods of calibrating the camera will minimize the lighting issue. 
 
-* Another area is in creating a Graphical User Interface that allows the user to click an object in the virtual world created by Baxter, and pick and place that particular item. In the current state, Baxter will pick up the object that it detects to be closest to itself. Currently, a GUI is under development that utilizes Gazebo pugin functionality. This GUI, when complete, would allow the user to choose an object presented in the Gazebo world, and click a button to execute the pick-and-place action.
-
-
-
+* **GUI Development**: We are also looking to create a Graphical User Interface (GUI) that allows the user to click an object in the virtual world (e.g in [Gazebo]), and pick and place that particular object. This GUI is currently under development.
 
 
 [Rethink Robotics]: http://www.rethinkrobotics.com/baxter/
