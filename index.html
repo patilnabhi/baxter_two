@@ -61,18 +61,26 @@ roslaunch baxter_two baxter_two.launch
 </ol>
 
 <h3>
-<a id="2-baxter_two-package-contents" class="anchor" href="#2-baxter_two-package-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. baxter_two Package Contents</h3>
+<a id="2-package-contents" class="anchor" href="#2-package-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Package Contents</h3>
 
-<p>Launch file:
--<code>baxter_two.launch</code>
-    -Launches joint trajectory server, MoveIt! with rviz, baxter_img, and baxter_pnp.</p>
+<p>The <code>baxter_two</code> package consists of following main files:</p>
 
-<p>nodes:
--baxter_img
-    -Subscribes to the <code>/cameras/right_hand_camera/image</code> topic, calculates cube locations using OpenCV tools, and publishes this information
+<ul>
+<li>
+<p><strong>baxter_two.launch</strong>: A launch file that starts the following nodes:</p>
+
+<ul>
+<li>joint_action_trajectory_server.py (required for MoveIt!)</li>
+<li>MoveIt! with rviz</li>
+<li>baxter_img.cpp</li>
+<li>baxter_pnp.py</li>
+</ul>
+</li>
+<li><p>baxter_img.cpp: subscribes to the <code>/cameras/right_hand_camera/image</code> topic, calculates object locations using OpenCV tools, and publishes this information to <code>baxter_pnp</code> node via a <code>PoseArray()</code> message
 -baxter_pnp
-    -Subscribes to the topic published to by <em>baxter_img</em>, then utilizes <code>PlanningSceneInterface</code> and <code>MoveGroupInterface</code> from <em>moveit_python</em> ** to create Baxter's world including the detected objects and plan/execute paths. 
-    -Uses <code>baxter_interface</code> for gripper control</p>
+-Subscribes to the topic published to by <em>baxter_img</em>, then utilizes <code>PlanningSceneInterface</code> and <code>MoveGroupInterface</code> from <em>moveit_python</em> ** to create Baxter's world including the detected objects and plan/execute paths. 
+-Uses <code>baxter_interface</code> for gripper control</p></li>
+</ul>
 
 <p>**Using these bindings, other capabilities include:
         -executing planned paths in both joint space and cartesian space
