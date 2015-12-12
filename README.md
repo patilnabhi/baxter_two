@@ -1,23 +1,27 @@
-Group 2 - Final Project
+Baxter Pick 'n' Place Project
 =========================
 
-##About##
+## About ##
 
-A ROS project developed for Northwestern ME495 - Embedded Systems in Robotics. This *baxter_two* package is used to control Baxter, a robot created by [Rethink Robotics], allowing Baxter to recognize several objects placed on a table, pick up the objects, and move them to a specified goal location. 
+A ROS project as part of ME495 - Embedded Systems in Robotics course at Northwestern University (NU). 
 
 <iframe width="420" height="315" src="https://www.youtube.com/embed/RkelMrtiU3E" frameborder="0" allowfullscreen></iframe>
 
 To launch (in a ROS workspace):
-
-```bash
+Type in terminal:
+```
 cd ~/baxter_ws/
 . baxter.sh
 rosrun baxter_tools enable_robot.py -e
 roslaunch baxter_two baxter_two.launch
 ```
+
+## Goal ##
+
+
 To run this demo on the Baxter simulation, use `roslaunch baxter_gazebo baxter_world.launch` to start up the simulator, and replace `. baxter.sh` with `. baxter.sh sim`.
 
-**NOTE:** Prerequisites to set up workspace are listed as follows:
+Prerequisites to set up workspace are listed as follows:
 
 1.	Install the [Baxter SDK]
 2.	Install [MoveIt!]
