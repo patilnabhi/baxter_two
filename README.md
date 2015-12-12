@@ -32,7 +32,7 @@ The following packages need to be installed:
 3. [moveit_python] by Michael Ferguson - to be installed in baxter_ws/src directory
 4. Baxter Simulator - v1.1 (ONLY needed if NOT working with actual baxter robot)
 
-### 2. `baxter_two` Package Contents ###
+### 2. baxter_two Package Contents ###
 
 Launch file:
 -`baxter_two.launch`
