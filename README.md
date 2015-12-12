@@ -1,11 +1,6 @@
-Baxter Pick 'n' Place Project
-=========================
-
 ## About ##
 
 A ROS project as part of ME495 - Embedded Systems in Robotics course at Northwestern University (NU). 
-
-<iframe width="420" height="315" src="https://www.youtube.com/embed/RkelMrtiU3E" frameborder="0" allowfullscreen></iframe>
 
 To launch (in a ROS workspace), type in terminal:
 ```
@@ -30,7 +25,7 @@ The following packages need to be installed for `baxter_two` package to work:
 1. [Baxter SDK] - to be installed in baxter_ws/src directory
 2. [MoveIt!]
 3. [moveit_python] by Michael Ferguson - to be installed in baxter_ws/src directory
-4. Baxter Simulator - v1.1 (ONLY needed if NOT working with actual baxter robot)
+4. [Baxter Simulator] - v1.1 (ONLY needed if NOT working with actual baxter robot)
 
 ### 2. Package Contents ###
 
@@ -42,7 +37,7 @@ The `baxter_two` package consists of following main files:
 	* baxter_img.cpp
 	* baxter_pnp.py
 
-* **baxter_img.cpp**: subscribes to the `/cameras/right_hand_camera/image` topic, calculates object locations using OpenCV tools, and publishes this information to `baxter_pnp` node via a `PoseArray()` message
+* **baxter_img.cpp**: subscribes to the `/cameras/right_hand_camera/image` topic, calculates object locations using [OpenCV] tools, and publishes this information to `baxter_pnp` node via a `PoseArray()` message
 
 * **baxter_pnp.py**: subscribes to the topic (called `Dpos`) published by *baxter_img*, and calls `PlanningSceneInterface` and `MoveGroupInterface` classes from `moveit_python` bindings to add collision objects and move baxter's arms respectively
 	* Allows both arms to be moved at the same time
@@ -57,7 +52,7 @@ This section gives a step-by-step approach to run a successful baxter pick and p
 	2. Set up [networking] with baxter
 	3. Install the required packages as outlined in **Prerequisites** section
 	4. Clone this package to your `baxter_ws/src` directory
-	5. source baxter.sh file, enable the robot and launch `baxter_two.launch` as follows:
+	5. [source] baxter.sh file, enable the robot and launch `baxter_two.launch` as follows:
 	```
 	cd ~/baxter_ws/
 	. baxter.sh
@@ -70,18 +65,16 @@ The following rqt_graph shows a ROS computation graph for baxter pick and place 
 
 <img src="" align="middle" width="300">
 
-##Future Work##
+## Future Work ##
 
 * **Camera Calibration**: We are looking into improving the camera calibration. Currently, variations in surrounding lighting affect the object detection. Using more finely-tuned methods of calibrating the camera will minimize the lighting issue. 
 
 * **GUI Development**: We are also looking to create a Graphical User Interface (GUI) that allows the user to click an object in the virtual world (e.g in [Gazebo]), and pick and place that particular object. This GUI is currently under development.
 
-
-[Rethink Robotics]: http://www.rethinkrobotics.com/baxter/
-[MoveIt!]: https://github.com/RethinkRobotics/sdk-docs/wiki/MoveIt-Tutorial#tutorial
-[Baxter setup instructions]: http://sdk.rethinkrobotics.com/wiki/Getting_Started
-[here]: http://sdk.rethinkrobotics.com/wiki/Simulator_Installation
+[Baxter SDK]: http://sdk.rethinkrobotics.com/wiki/Workstation_Setup
+[MoveIt!]: http://moveit.ros.org/install/
 [moveit_python]: https://github.com/mikeferguson/moveit_python
-[this tutorial]: https://github.com/RethinkRobotics/sdk-docs/wiki/MoveIt-Tutorial#tutorial
+[Baxter Simulator]: http://sdk.rethinkrobotics.com/wiki/Simulator_Installation
 [OpenCV]: http://opencv.org/
-[these instructions]: http://docs.opencv.org/2.4/doc/tutorials/introduction/linux_install/linux_install.html
+[networking]: http://sdk.rethinkrobotics.com/wiki/Networking
+[source]: http://sdk.rethinkrobotics.com/wiki/Workstation_Setup
