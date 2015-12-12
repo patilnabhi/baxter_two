@@ -7,8 +7,7 @@ A ROS project as part of ME495 - Embedded Systems in Robotics course at Northwes
 
 <iframe width="420" height="315" src="https://www.youtube.com/embed/RkelMrtiU3E" frameborder="0" allowfullscreen></iframe>
 
-To launch (in a ROS workspace):
-Type in terminal:
+To launch (in a ROS workspace), type in terminal:
 ```
 cd ~/baxter_ws/
 . baxter.sh
@@ -16,21 +15,24 @@ rosrun baxter_tools enable_robot.py -e
 roslaunch baxter_two baxter_two.launch
 ```
 
-## Goal ##
+## Goal of Project ##
 
+**Use baxter to pick and place objects from one location to another**
 
-To run this demo on the Baxter simulation, use `roslaunch baxter_gazebo baxter_world.launch` to start up the simulator, and replace `. baxter.sh` with `. baxter.sh sim`.
+## Tutorial ##
 
-Prerequisites to set up workspace are listed as follows:
+The following sections describe in detail the required steps:
 
-1.	Install the [Baxter SDK]
-2.	Install [MoveIt!]
-3.	Download [moveit_python] by Michael Ferguson
-4.	Install Baxter Simulator (if running the simulation) **
+### 1. Prerequisites ###
 
-**This must use version 1.1 of the simulator
+The following packages need to be installed: 
 
-##Package Contents##
+1. [Baxter SDK] - to be installed in baxter_ws/src directory
+2. [MoveIt!]
+3. [moveit_python] by Michael Ferguson - to be installed in baxter_ws/src directory
+4. Baxter Simulator - v1.1 (ONLY needed if NOT working with actual baxter robot)
+
+### 2. `baxter_two` Package Contents ###
 
 Launch file:
 -`baxter_two.launch`
