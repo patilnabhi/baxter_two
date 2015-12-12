@@ -75,7 +75,7 @@ The following rqt_graph shows a ROS computation graph for baxter pick and place 
 
 ## Team ##
 
-* **Abhishek Patil**
+* **[Abhishek Patil]**
 * **Alan Hong**
 * **Hanlin Wang**
 * **Vince Martinez**
@@ -87,3 +87,4 @@ The following rqt_graph shows a ROS computation graph for baxter pick and place 
 [OpenCV]: http://opencv.org/
 [networking]: http://sdk.rethinkrobotics.com/wiki/Networking
 [source]: http://sdk.rethinkrobotics.com/wiki/Workstation_Setup
+[Abhishek Patil]: https://github.com/patilnabhi
