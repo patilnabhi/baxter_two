@@ -75,10 +75,10 @@ The following rqt_graph shows a ROS computation graph for baxter pick and place 
 
 ## Team ##
 
-* **[Abhishek Patil]**
-* **Alan Hong**
-* **Hanlin Wang**
-* **Vince Martinez**
+* [Abhishek Patil]
+* Alan Hong
+* Hanlin Wang
+* Vince Martinez
 
 [Baxter SDK]: http://sdk.rethinkrobotics.com/wiki/Workstation_Setup
 [MoveIt!]: http://moveit.ros.org/install/
