@@ -17,6 +17,7 @@ using namespace cv;
 uchar *temp;
 int flag = 1;
 int size_ = 0;
+
 //float pose[2] = {0};
 IplImage *head;
 IplImage *left_hand;
@@ -30,10 +31,10 @@ CvMat *DIS = cvCreateMat(1, 4, CV_32FC1);
 int WIDTH, HEIGHT, STEP;
 int NUM_OBJ = 0;
 #if fla == 1
-uchar COLOR[3] = {60, 85, 70};
-uchar COLOR_[3] = {90, 175, 255};
-uchar COLOR1[3] = {0, 90, 80};
-uchar COLOR2[3] = {9, 255, 245};
+uchar COLOR[3] = {60, 85, 70};///Low hsv values for green colors
+uchar COLOR_[3] = {90, 175, 255};/// high hsv values for green values
+uchar COLOR1[3] = {0, 90, 80};///low hsv values for red color
+uchar COLOR2[3] = {9, 255, 245};/// high hsv values for red color
 #else
 uchar COLOR[3] = {100, 100, 0};
 #endif
@@ -42,7 +43,7 @@ extern int GetColor(IplImage *);
 extern void FilterColor(IplImage *, IplImage *, uchar *);
 extern void FilterColor_(IplImage *, IplImage *, uchar *);
 ros::Publisher pos_pub;
-typedef struct pos
+typedef struct pos///the postion and size of object in image frame
 {
   int x, y;
   float x1;
@@ -50,7 +51,7 @@ typedef struct pos
   uchar color;
   float angle;
 }pos;
-typedef struct re_pos
+typedef struct re_pos/// the position of 2 points on one object in world frame
 {
   float x, y, z;
   float x1, y1, z1;
@@ -58,21 +59,21 @@ typedef struct re_pos
   uchar color;
   int flag;
 }pos_;
-typedef struct rpos
+typedef struct rpos/// the position orientation and the size of objects in world frame
 {
   float x, y, z, size;
   uchar color;
   float angle;
 }rpos;
 
-extern void Get3DPos(pos *src, pos_ *dis, int num);
-extern void GetRealPos(float, float, float, float, float, float, float, float, pos_*);
+extern void Get3DPos(pos *src, pos_ *dis, int num);/// convert the coordinate from the image frame to world frame 
+extern void GetRealPos(float, float, float, float, float, float, float, float, pos_*);/// get object center position in world frame which called bu Get3DPos
 extern void GetRealPos_(float x, float y, float xz, float yz, float zz, float xp, float yp, float zp, pos_ *dis);
 extern void thres(rpos* src, pos_ *dis);
-pos *pos_head = (pos *)malloc(sizeof(pos) * 100);
-pos_ *rel_pos = (pos_ *)malloc(sizeof(pos_) * 100);
-rpos *f_pos = (rpos *)malloc(sizeof(rpos) * 100);
-void ImageToIpl(uchar *src, IplImage *dis)
+pos *pos_head = (pos *)malloc(sizeof(pos) * 100);///buffer for obj pos in img frame
+pos_ *rel_pos = (pos_ *)malloc(sizeof(pos_) * 100);/// buffer for the points pos in world frame
+rpos *f_pos = (rpos *)malloc(sizeof(rpos) * 100);/// buffer for the object center, orientation and size in world frame
+void ImageToIpl(uchar *src, IplImage *dis)///covert image topic data into IplImage data structure
 {
   for(int i = 0; i != HEIGHT; i ++)
   {
@@ -91,11 +92,11 @@ void ImageToIpl(uchar *src, IplImage *dis)
   }
 }
 
-void ImageCallBack(const sensor_msgs::Image &msg)
+void ImageCallBack(const sensor_msgs::Image &msg)///subscriber call back function
 {
   if (flag == 1)
   {
-    WIDTH = msg.width;
+    WIDTH = msg.width;/// set the global parameters for the image
     HEIGHT = msg.height;
     STEP = msg.step;
     size_ = msg.step * msg.height;
@@ -122,7 +123,7 @@ void ImageCallBack(const sensor_msgs::Image &msg)
     pose.position.y = rel_pos[i].y / 1000;
     pose.position.z = rel_pos[i].angle;
     pose.orientation.x = f_pos[i].size;
-    points.poses.push_back(pose);
+    points.poses.push_back(pose);/// publish the obj pos and orientation and size
   }
   pos_pub.publish(points);
 }
@@ -136,7 +137,7 @@ int main(int arg, char** argv)
   _Ma(1, 2, TRANS) = 236.83502;
   _Ma(2, 0, TRANS) = 0;
   _Ma(2, 1, TRANS) = 0;
-  _Ma(2, 2, TRANS) = 1;
+  _Ma(2, 2, TRANS) = 1;///the calibration paramter matrix
   _Ma(0, 0, INVTRANS) = 0.0022042;
   _Ma(0, 1, INVTRANS) = 0;
   _Ma(0, 2, INVTRANS) = -0.74724;
@@ -145,8 +146,8 @@ int main(int arg, char** argv)
   _Ma(1, 2, INVTRANS) = -0.57610;
   _Ma(2, 0, INVTRANS) = 0;
   _Ma(2, 1, INVTRANS) = 0;
-  _Ma(2, 2, INVTRANS) = 1;
-  _Ma(0, 0, DIS) = 0.01386;
+  _Ma(2, 2, INVTRANS) = 1;/// thw inverse of the parameter matrix
+  _Ma(0, 0, DIS) = 0.01386;/// distort matrix.
   _Ma(0, 1, DIS) = -0.058;
   _Ma(0, 2, DIS) = 0.00134;
   _Ma(0, 3, DIS) = 0.00227;
@@ -171,18 +172,18 @@ void GetPosition(IplImage *src)
   NUM_OBJ = 0;
   //cvUndistort2(src, src_, TRANS, DIS);
   //ROS_INFO("%d", (int)_b(200, 100, src_));
-  cvSmooth(src, src, CV_GAUSSIAN, 5, 5);
-  FilterColor(src, blue, COLOR);
-  FilterColor_(src, red, COLOR);
-  cvErode(blue, temp_, NULL, 4);
+  cvSmooth(src, src, CV_GAUSSIAN, 5, 5);/// do the gaussian filtering for the noise
+  FilterColor(src, blue, COLOR);/// pick up the object in green color and make everything else black
+  //FilterColor_(src, red, COLOR);
+  cvErode(blue, temp_, NULL, 4);///remove the littile holes on the object;
   IplImage *gray = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 1);
-  cvCvtColor(temp_, gray, CV_BGR2GRAY);
-  cvThreshold(gray, gray_, 20, 255, CV_THRESH_BINARY);
+  cvCvtColor(temp_, gray, CV_BGR2GRAY);/// convert coloful img into mono
+  cvThreshold(gray, gray_, 20, 255, CV_THRESH_BINARY);/// convert the mono image into binary image
   //cvCanny(gray_, con, 30, 60, 3);
   con_ = cvCloneImage(gray_);
   CvMemStorage *st = cvCreateMemStorage(0);
   CvSeq *first = NULL;
-  cvFindContours(con_, st, &first, sizeof(CvContour), CV_RETR_LIST);
+  cvFindContours(con_, st, &first, sizeof(CvContour), CV_RETR_LIST);/// find the connective areas in the image
   CvSeq *big = NULL;
   double area = 0;
   for(CvSeq *c = first; c != NULL; c = c->h_next)
@@ -205,14 +206,14 @@ void GetPosition(IplImage *src)
     y /= c->total;
     pos_head[NUM_OBJ].x = (int)x - WIDTH / 2;
     pos_head[NUM_OBJ].y = (int)(HEIGHT - y) - HEIGHT / 2;*/
-    CvBox2D rect = cvMinAreaRect2(c, st);
+    CvBox2D rect = cvMinAreaRect2(c, st);/// use a squre with angle to fit the connective area
     pos_head[NUM_OBJ].x = (int) rect.center.x - WIDTH / 2;
     pos_head[NUM_OBJ].y = -((int) rect.center.y - HEIGHT / 2);
     //pos_head[NUM_OBJ].x1 = (float) sqrt(rect.size.height * rect.size.height + rect.size.width * rect.size.width);
     pos_head[NUM_OBJ].x2 = (int) (pos_head[NUM_OBJ].x + sin(rect.angle / 180 * 3.14) * rect.size.height / 2);
     pos_head[NUM_OBJ].y2 = (int) (pos_head[NUM_OBJ].y + cos(rect.angle / 180 * 3.14) * rect.size.height / 2);
     pos_head[NUM_OBJ].angle = rect.angle;
-    Get3DPos(pos_head + NUM_OBJ, rel_pos + NUM_OBJ, 1);
+    Get3DPos(pos_head + NUM_OBJ, rel_pos + NUM_OBJ, 1);///get the world frame postions 
     f_pos[NUM_OBJ].x = rel_pos[NUM_OBJ].x;
     f_pos[NUM_OBJ].y = rel_pos[NUM_OBJ].y;
     f_pos[NUM_OBJ].z = rel_pos[NUM_OBJ].z;
@@ -226,7 +227,7 @@ void GetPosition(IplImage *src)
   ROS_INFO("%f, %f, %f", rel_pos[0].x, rel_pos[0].y, pos_head[0].angle);
   cvShowImage("gar", src);
   waitKey(1);
-  cvReleaseMemStorage(&st);
+  cvReleaseMemStorage(&st);///Release the memory we have malloced
   cvReleaseImage(&gray);
   cvReleaseImage(&temp_);
   cvReleaseImage(&gray_);
@@ -236,7 +237,7 @@ void GetPosition(IplImage *src)
   
   //ROS_INFO("Detect [%d] objects", NUM_OBJ);
 }
-void FilterColor(IplImage *src, IplImage *dis, uchar* thre)
+void FilterColor(IplImage *src, IplImage *dis, uchar* thre)// filter the color for the green
 {
  IplImage *temp_ = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 3);
  cvCvtColor(src, temp_, CV_BGR2HSV);
@@ -260,7 +261,7 @@ void FilterColor(IplImage *src, IplImage *dis, uchar* thre)
   }
   cvReleaseImage(&temp_);
 }
-void FilterColor_(IplImage *src, IplImage *dis, uchar* thre)
+void FilterColor_(IplImage *src, IplImage *dis, uchar* thre)// filter the colot for the red
 {
  IplImage *temp_ = cvCreateImage(cvGetSize(src), IPL_DEPTH_8U, 3);
  cvCvtColor(src, temp_, CV_BGR2HSV);
@@ -284,7 +285,7 @@ void FilterColor_(IplImage *src, IplImage *dis, uchar* thre)
   }
   cvReleaseImage(&temp_);
 }
-void Get3DPos(pos *src, pos_ *dis, int num)///The num is the # of Object
+void Get3DPos(pos *src, pos_ *dis, int num)///The num is the number of Object
 {
   CvMat *test = cvCreateMat(3, 3, CV_32FC1);
   _Ma(1, 1, test);
@@ -297,8 +298,8 @@ void Get3DPos(pos *src, pos_ *dis, int num)///The num is the # of Object
   dis->angle = src->angle;
   dis->flag = 1;
 }
-void GetRealPos(float x, float y, float xz, float yz, float zz, float xp, float yp, float zp, pos_ *dis) /// xp ...zp is the porsition of a
-///point on thr table, and the xz ...zz is the orientation of the normal vector of the table. 
+void GetRealPos(float x, float y, float xz, float yz, float zz, float xp, float yp, float zp, pos_ *dis) /// xp ...zp is the coordinate of one
+///point on thr table, and the xz ...zz is the orientation of the normal vector of the table, both of them is are represented in the camera frame
 {
   dis->y = x * (xp * xz + yp * yz + zp * zz) / (x * xz + y * yz + zz);
   dis->x = -y * (xp * xz + yp * yz + zp * zz) / (x * xz + y * yz + zz);
@@ -311,9 +312,6 @@ void GetRealPos_(float x, float y, float xz, float yz, float zz, float xp, float
   dis->x1 = -y * (xp * xz + yp * yz + zp * zz) / (x * xz + y * yz + zz);
   dis->z1 = -(-xp * xz - yp * yz -zp * zz) / (x * xz + y * yz + zz);
 }
-//void thres(rpos* src, pos_ *dis)
-//{
-  
-//}
+
 
 
