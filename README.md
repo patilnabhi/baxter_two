@@ -76,7 +76,7 @@ The following rqt_graph shows a ROS computation graph for baxter pick and place 
 ## Team ##
 
 * [Abhishek Patil]
-* Alan Hong
+* [Alan Hong]
 * Hanlin Wang
 * Vince Martinez
 
