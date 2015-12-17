@@ -88,7 +88,7 @@ The following rqt_graph shows a ROS computation graph for baxter pick and place 
 [networking]: http://sdk.rethinkrobotics.com/wiki/Networking
 [source]: http://sdk.rethinkrobotics.com/wiki/Workstation_Setup
 [Gazebo]: http://www.gazebosim.org/tutorials?tut=ros_installing&cat=connect_ros
-[Abhishek Patil]: https://github.com/patilnabhi
+[Abhishek Patil]: http://patilnabhi.github.io/portfolio
 [Alan Hong]: https://github.com/hongalan
 [Hanlin Wang]: https://github.com/hanlinwang2015
 [Vince Martinez]: https://github.com/vincemartinez
