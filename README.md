@@ -77,8 +77,8 @@ The following rqt_graph shows a ROS computation graph for baxter pick and place 
 
 * [Abhishek Patil]
 * [Alan Hong]
-* Hanlin Wang
-* Vince Martinez
+* [Hanlin Wang]
+* [Vince Martinez]
 
 [Baxter SDK]: http://sdk.rethinkrobotics.com/wiki/Workstation_Setup
 [MoveIt!]: http://moveit.ros.org/install/
@@ -90,3 +90,5 @@ The following rqt_graph shows a ROS computation graph for baxter pick and place 
 [Gazebo]: http://www.gazebosim.org/tutorials?tut=ros_installing&cat=connect_ros
 [Abhishek Patil]: https://github.com/patilnabhi
 [Alan Hong]: https://github.com/hongalan
+[Hanlin Wang]: https://github.com/hanlinwang2015
+[Vince Martinez]: https://github.com/vincemartinez
