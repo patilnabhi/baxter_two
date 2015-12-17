@@ -2,5 +2,6 @@
 
 git add --all
 git commit -m $1
+git checkout $2
 git push origin $2
 
